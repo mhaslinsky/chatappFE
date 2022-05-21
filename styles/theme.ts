@@ -15,6 +15,6 @@ const overrides = {
 };
 
 // 3. extend the theme
-const theme = extendTheme(withDefaultColorScheme({ colorScheme: "red" }));
+const theme = extendTheme(withDefaultColorScheme({ colorScheme: "blue" }));
 
 export default theme;

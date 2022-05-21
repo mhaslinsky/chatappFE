@@ -1,14 +1,21 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { Button, Flex, Grid, GridItem } from "@chakra-ui/react";
-import { useColorMode, useColorModeValue } from "@chakra-ui/react";
+import { Button, Flex } from "@chakra-ui/react";
+import { useColorMode } from "@chakra-ui/react";
+import { socketMain } from "../util/socket";
+import NsList from "../components/NsList";
+import Namespace from "../models/Namespace";
+import { useState } from "react";
 
 const Home: NextPage = () => {
   const { colorMode, toggleColorMode } = useColorMode();
-  // Here's the signature
-  const nsRow = useColorModeValue("#e4f8fa", "#1c1e1f");
-  const roomRow = useColorModeValue("#f9f9f9", "#161819");
-  const borderColor = useColorModeValue("#d2f8fb", "#252729");
+  const [namespaces, setNamespaces] = useState<Namespace[] | null>(null);
+  // const nsRow = useColorModeValue("#e4f8fa", "#1c1e1f");
+
+  socketMain.on("nsList", (nsData) => {
+    setNamespaces(nsData);
+  });
+
   return (
     <div>
       <Head>
@@ -16,27 +23,34 @@ const Home: NextPage = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main>
-        <Grid
-          h='100vh'
-          templateRows='repeat(2, 1fr)'
-          templateColumns='repeat(10, 1fr)'
-        >
-          <GridItem bgColor={nsRow} rowSpan={2} colSpan={1}></GridItem>
-          <GridItem
-            bgColor={roomRow}
-            borderRight='1px'
-            borderColor={borderColor}
-            rowSpan={2}
-            colSpan={2}
-          ></GridItem>
-          <GridItem bgColor={roomRow} rowSpan={2} colSpan={7}>
-            <Flex flexDirection='column' justifyContent='flex-end' h='100%'>
-              <Button onClick={toggleColorMode}>
-                Toggle {colorMode === "light" ? "Dark" : "Light"}
-              </Button>
-            </Flex>
-          </GridItem>
-        </Grid>
+        <Flex flexDirection={{ base: "column", md: "row" }} h='100vh' w='100vw'>
+          <Flex
+            display={{ base: "none", md: "unset" }}
+            flexDirection='column'
+            h='100%'
+            w='72px'
+            backgroundColor='blackAlpha.400'
+          >
+            <NsList namespaces={namespaces} />
+          </Flex>
+          <Flex
+            display={{ base: "none", md: "unset" }}
+            flexDirection='column'
+            h='100%'
+            w='240px'
+            backgroundColor='blackAlpha.200'
+          ></Flex>
+          <Flex
+            flexDirection='column'
+            justifyContent='flex-end'
+            h='100%'
+            flexGrow='1'
+          >
+            <Button m='.2rem' onClick={toggleColorMode}>
+              Toggle {colorMode === "light" ? "Dark" : "Light"}
+            </Button>
+          </Flex>
+        </Flex>
       </main>
     </div>
   );
