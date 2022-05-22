@@ -6,7 +6,7 @@ import {
 
 // 2. Add your color mode config
 const config: ThemeConfig = {
-  initialColorMode: "light",
+  initialColorMode: "dark",
   useSystemColorMode: false,
 };
 
@@ -14,7 +14,16 @@ const overrides = {
   components: { Button: { baseStyle: { _focus: { boxShadow: "none" } } } },
 };
 
+const fonts = {
+  fonts: { heading: "Inter, sans-serif", body: "Inter, sans-serif" },
+};
+
 // 3. extend the theme
-const theme = extendTheme(withDefaultColorScheme({ colorScheme: "blue" }));
+const theme = extendTheme(
+  config,
+  overrides,
+  fonts,
+  withDefaultColorScheme({ colorScheme: "blue" })
+);
 
 export default theme;

@@ -6,15 +6,21 @@ import { socketMain } from "../util/socket";
 import NsList from "../components/NsList";
 import Namespace from "../models/Namespace";
 import { useState } from "react";
+import Room from "../models/Room";
+import RoomList from "../components/RoomList";
 
 const Home: NextPage = () => {
   const { colorMode, toggleColorMode } = useColorMode();
+  const [roomData, setRoomData] = useState<Room[] | null>(null);
   const [namespaces, setNamespaces] = useState<Namespace[] | null>(null);
   // const nsRow = useColorModeValue("#e4f8fa", "#1c1e1f");
-
   socketMain.on("nsList", (nsData) => {
     setNamespaces(nsData);
   });
+
+  function roomDataHandler(rD: Room[]) {
+    setRoomData(rD);
+  }
 
   return (
     <div>
@@ -31,7 +37,7 @@ const Home: NextPage = () => {
             w='72px'
             backgroundColor='blackAlpha.400'
           >
-            <NsList namespaces={namespaces} />
+            <NsList roomData={roomDataHandler} namespaces={namespaces} />
           </Flex>
           <Flex
             display={{ base: "none", md: "unset" }}
@@ -39,7 +45,9 @@ const Home: NextPage = () => {
             h='100%'
             w='240px'
             backgroundColor='blackAlpha.200'
-          ></Flex>
+          >
+            <RoomList rooms={roomData} />
+          </Flex>
           <Flex
             flexDirection='column'
             justifyContent='flex-end'
