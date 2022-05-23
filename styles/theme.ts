@@ -11,7 +11,11 @@ const config: ThemeConfig = {
 };
 
 const overrides = {
-  components: { Button: { baseStyle: { _focus: { boxShadow: "none" } } } },
+  components: {
+    Button: { baseStyle: { _focus: { boxShadow: "none" } } },
+    Switch: { baseStyle: { _focus: { boxShadow: "none" } } },
+    Input: { baseStyle: { _focus: { boxShadow: "none" } } },
+  },
 };
 
 const fonts = {

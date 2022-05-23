@@ -1,21 +1,31 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, useColorMode, useColorModeValue } from "@chakra-ui/react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Namespace from "../models/Namespace";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import Room from "../models/Room";
 
 const NsList: React.FC<{
   namespaces: Namespace[] | null;
   roomData: (roomData: Room[]) => void;
+  socketData: (socketData: Socket) => void;
 }> = (props) => {
+  const bg = useColorModeValue("teal.400", "teal.600");
   const [nsSocket, setNsSocket] = useState<any>();
+
+  useEffect(() => {
+    if (props.namespaces) {
+      nsClickHandler(props.namespaces[0]);
+    }
+  }, [props.namespaces]);
 
   if (nsSocket) {
     nsSocket!.on("nsRoomLoad", (roomData: Room[]) => {
       props.roomData(roomData);
+      props.socketData(nsSocket);
     });
   }
+
   function nsClickHandler(ns: Namespace) {
     setNsSocket(io(`http://localhost:4000${ns.endpoint}`));
   }
@@ -26,7 +36,7 @@ const NsList: React.FC<{
         {props.namespaces.map((ns) => {
           let backgroundColor;
           nsSocket?.nsp == ns.endpoint
-            ? (backgroundColor = "teal.600")
+            ? (backgroundColor = bg)
             : (backgroundColor = "blackAlpha.500");
           return (
             <Flex
