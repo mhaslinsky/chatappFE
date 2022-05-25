@@ -3,7 +3,6 @@ import {
   Divider,
   Flex,
   Heading,
-  Icon,
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
@@ -16,6 +15,7 @@ const RoomList: React.FC<{
   rooms: Room[] | null;
   curNsSocket: Socket | null;
   usersInCurRoom: (users: number) => void;
+  curRoomTitle: (rmTitle: string) => void;
 }> = (props) => {
   const bg = useColorModeValue("blue.200", "blackAlpha.300");
   const hover = useColorModeValue("teal.300", "teal.700");
@@ -29,11 +29,13 @@ const RoomList: React.FC<{
   }, [props.rooms]);
 
   function roomClickHandler(rm: string) {
+    if (curRoom) props.curNsSocket?.emit("leaveRoom", curRoom);
     //client handles joining NS's, server handles joining rooms
     props.curNsSocket!.emit("joinRoom", rm, (newNumberOfMembers: number) => {
       props.usersInCurRoom(newNumberOfMembers);
     });
     setCurRoom(rm);
+    props.curRoomTitle(rm);
   }
 
   if (props.rooms) {

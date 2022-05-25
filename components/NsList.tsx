@@ -17,6 +17,7 @@ const NsList: React.FC<{
     if (props.namespaces) {
       nsClickHandler(props.namespaces[0]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.namespaces]);
 
   if (nsSocket) {
@@ -27,6 +28,7 @@ const NsList: React.FC<{
   }
 
   function nsClickHandler(ns: Namespace) {
+    if (nsSocket) nsSocket.close();
     setNsSocket(io(`http://localhost:4000${ns.endpoint}`));
   }
 
