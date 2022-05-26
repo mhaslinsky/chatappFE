@@ -1,16 +1,7 @@
 /* eslint-disable react/no-children-prop */
 import type { NextPage } from "next";
 import Head from "next/head";
-import {
-  Box,
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  Input,
-  Switch,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Flex, Input, Switch, Text, useToast } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/react";
 import { socketMain } from "../util/socket";
 import NsList from "../components/NsList";
@@ -21,6 +12,7 @@ import RoomList from "../components/RoomList";
 import { Socket } from "socket.io-client";
 import { ViewIcon } from "@chakra-ui/icons";
 import { useForm } from "react-hook-form";
+import Chat from "../components/Chat";
 
 interface FormValue {
   message: string;
@@ -37,6 +29,7 @@ const Home: NextPage = () => {
   const {
     handleSubmit,
     register,
+    reset,
     formState: { errors },
   } = useForm<FormValue>({ defaultValues: { message: "" } });
 
@@ -69,7 +62,8 @@ const Home: NextPage = () => {
         isClosable: true,
       });
     else {
-      console.log(data);
+      curNsSocket?.emit("newMessageToServer", { text: data.message });
+      reset({ message: "" });
     }
   }
 
@@ -142,6 +136,7 @@ const Home: NextPage = () => {
                 fontWeight='700'
               >{`\u00A0${numMembers} ${people} in here`}</Text>
             </Flex>
+            <Chat curNsSocket={curNsSocket} />
             <Box margin='.3rem'>
               <form onSubmit={handleSubmit(submitHandler)}>
                 <Input

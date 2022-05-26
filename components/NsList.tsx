@@ -1,4 +1,4 @@
-import { Box, Flex, useColorMode, useColorModeValue } from "@chakra-ui/react";
+import { Box, Flex, Tooltip, useColorModeValue } from "@chakra-ui/react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Namespace from "../models/Namespace";
@@ -41,22 +41,37 @@ const NsList: React.FC<{
             ? (backgroundColor = bg)
             : (backgroundColor = "blackAlpha.500");
           return (
-            <Flex
-              onClick={() => {
-                nsClickHandler(ns);
-              }}
-              transition='.3s'
-              cursor='pointer'
-              alignItems='center'
-              margin='.4rem'
-              marginBottom='.4rem'
+            <Tooltip
+              boxShadow='1px 3px 6px 2px rgba(0, 0, 0, 0.2)'
               borderRadius='1rem'
-              backgroundColor={backgroundColor}
-              padding='.2rem'
+              fontSize='lg'
+              fontWeight='700'
+              backgroundColor={bg}
+              placement='right'
+              label={ns.endpoint.substring(1)}
               key={ns.id}
             >
-              <Image width='100' height='100' alt={ns.endpoint} src={ns.img} />
-            </Flex>
+              <Flex
+                onClick={() => {
+                  nsClickHandler(ns);
+                }}
+                transition='.3s'
+                cursor='pointer'
+                alignItems='center'
+                margin='.4rem'
+                marginBottom='.4rem'
+                borderRadius='1rem'
+                backgroundColor={backgroundColor}
+                padding='.2rem'
+              >
+                <Image
+                  width='100'
+                  height='100'
+                  alt={ns.endpoint}
+                  src={ns.img}
+                />
+              </Flex>
+            </Tooltip>
           );
         })}
       </Box>

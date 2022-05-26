@@ -11,6 +11,7 @@ module.exports = {
       "insta-sham.s3.us-east-2.amazonaws.com",
       "upload.wikimedia.org",
       "www.svgrepo.com",
+      "via.placeholder.com",
       "*",
     ],
   },
