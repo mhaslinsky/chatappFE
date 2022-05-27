@@ -6,7 +6,7 @@ import { useColorMode } from "@chakra-ui/react";
 import { socketMain } from "../util/socket";
 import NsList from "../components/NsList";
 import Namespace from "../models/Namespace";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Room from "../models/Room";
 import RoomList from "../components/RoomList";
 import { Socket } from "socket.io-client";
@@ -25,6 +25,8 @@ const Home: NextPage = () => {
   const [namespaces, setNamespaces] = useState<Namespace[] | null>(null);
   const [numMembers, setNumMembers] = useState<Number>(0);
   const [currentRoom, setCurrentRoom] = useState<string>();
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
+
   const toast = useToast();
   const {
     handleSubmit,
@@ -86,6 +88,7 @@ const Home: NextPage = () => {
             flexDirection='column'
             h='100%'
             w='72px'
+            flexShrink='0'
             alignItems='center'
             justifyContent='space-between'
             backgroundColor='blackAlpha.400'
@@ -107,6 +110,7 @@ const Home: NextPage = () => {
             flexDirection='column'
             h='100%'
             w='240px'
+            flexShrink='0'
             backgroundColor='blackAlpha.200'
           >
             <RoomList

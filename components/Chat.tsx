@@ -1,42 +1,55 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
-
 interface message {
-  text: { text: string };
+  text: string;
   time: any;
   username: string;
   avatar: string;
 }
+interface ChatProps {
+  curNsSocket: Socket | null;
+}
 
-const Chat: React.FC<{ curNsSocket: Socket | null }> = (props) => {
+const Chat: React.FC<ChatProps> = (props) => {
   const [messages, setMessages] = useState<message[]>([]);
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
-  props.curNsSocket?.on("messageToClients", (msg: message) => {
-    setMessages((prevState) => {
-      return prevState.concat(msg);
+  useEffect(() => {
+    props.curNsSocket?.on("messageToClients", (msg: message) => {
+      setMessages((prevState) => {
+        return prevState.concat(msg);
+      });
     });
-  });
+  }, [props.curNsSocket]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
-    <Box h='100%'>
+    <Box overflow='auto' h='100%'>
       {messages.map((msg) => {
         return (
-          <Flex key={msg.time}>
-            <Box>
-              <Image
-                width='80'
-                height='80'
-                alt={msg.username}
-                src={msg.avatar}
-              ></Image>
+          <Flex margin='1rem' gap='.4rem' alignItems='center' key={msg.time}>
+            <Box
+              flexShrink='0'
+              overflow='hidden'
+              w='10'
+              h='10'
+              position='relative'
+              borderRadius='50%'
+            >
+              <Image layout='fill' alt={msg.username} src={msg.avatar}></Image>
             </Box>
-            <Text>{msg.username}</Text>
-            <Text>{msg.text.text}</Text>
+
+            <Text fontWeight='700'>{msg.username}</Text>
+            <Text>{msg.text}</Text>
           </Flex>
         );
       })}
+      <div ref={messagesEndRef}></div>
     </Box>
   );
 };

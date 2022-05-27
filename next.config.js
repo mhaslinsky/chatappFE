@@ -12,6 +12,8 @@ module.exports = {
       "upload.wikimedia.org",
       "www.svgrepo.com",
       "via.placeholder.com",
+      "clinicforspecialchildren.org",
+      "i.pinimg.com",
       "*",
     ],
   },

@@ -20,7 +20,7 @@ const RoomList: React.FC<{
   const bg = useColorModeValue("blue.200", "blackAlpha.300");
   const hover = useColorModeValue("teal.300", "teal.700");
   const [curRoom, setCurRoom] = useState<string | null>(null);
-  // const [numMembers, setNumMembers] = useState<Number>(0);
+
   useEffect(() => {
     if (props.rooms) {
       roomClickHandler(props.rooms[0].roomTitle);
