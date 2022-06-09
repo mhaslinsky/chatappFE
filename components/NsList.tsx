@@ -36,7 +36,7 @@ const NsList: React.FC<{
       nsSocket.close();
     }
     setNsSocket(
-      io(`http://localhost:4000${ns.endpoint}`, {
+      io(`${process.env.SOCKETIO}${ns.endpoint}`, {
         query: { username: props.username },
       })
     );

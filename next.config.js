@@ -17,6 +17,6 @@ module.exports = {
       "*",
     ],
   },
-  env: {},
+  env: { SOCKETIO: process.env.SOCKETIO },
   reactStrictMode: true,
 };

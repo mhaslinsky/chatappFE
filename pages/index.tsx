@@ -19,7 +19,7 @@ interface FormValue {
 }
 
 const connectChatServer = (username: string) => {
-  const socketMain = io(`http://localhost:4000`, {
+  const socketMain = io(`${process.env.SOCKETIO}`, {
     query: { username },
   });
   return socketMain;
@@ -35,7 +35,6 @@ const Home: NextPage = () => {
   const [username, setUserName] = useState<string>("");
 
   useEffect(() => {
-    console.log("ue firing");
     if (!username) return;
     setCurNsSocket(connectChatServer(username));
     return () => {
