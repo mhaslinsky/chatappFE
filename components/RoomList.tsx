@@ -10,7 +10,6 @@ import { ChatIcon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 import Room from "../models/Room";
-import { rmdirSync } from "fs";
 
 const RoomList: React.FC<{
   rooms: Room[] | null;

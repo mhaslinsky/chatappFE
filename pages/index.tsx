@@ -32,7 +32,7 @@ const Home: NextPage = () => {
   const [namespaces, setNamespaces] = useState<Namespace[] | null>(null);
   const [numMembers, setNumMembers] = useState<Number>(0);
   const [currentRoom, setCurrentRoom] = useState<string>();
-  const [username, setUserName] = useState<string>();
+  const [username, setUserName] = useState<string>("");
 
   useEffect(() => {
     console.log("ue firing");
