@@ -3,20 +3,27 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { Box, Flex, Input, Switch, Text, useToast } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/react";
-import { socketMain } from "../util/socket";
 import NsList from "../components/NsList";
 import Namespace from "../models/Namespace";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Room from "../models/Room";
 import RoomList from "../components/RoomList";
-import { Socket } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { ViewIcon } from "@chakra-ui/icons";
 import { useForm } from "react-hook-form";
 import Chat from "../components/Chat";
+import UserNameModal from "../components/Modal";
 
 interface FormValue {
   message: string;
 }
+
+const connectChatServer = (username: string) => {
+  const socketMain = io(`http://localhost:4000`, {
+    query: { username },
+  });
+  return socketMain;
+};
 
 const Home: NextPage = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -25,7 +32,17 @@ const Home: NextPage = () => {
   const [namespaces, setNamespaces] = useState<Namespace[] | null>(null);
   const [numMembers, setNumMembers] = useState<Number>(0);
   const [currentRoom, setCurrentRoom] = useState<string>();
-  const messagesEndRef = useRef<null | HTMLDivElement>(null);
+  const [username, setUserName] = useState<string>();
+
+  useEffect(() => {
+    console.log("ue firing");
+    if (!username) return;
+    setCurNsSocket(connectChatServer(username));
+    return () => {
+      curNsSocket?.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username]);
 
   const toast = useToast();
   const {
@@ -37,8 +54,12 @@ const Home: NextPage = () => {
 
   const people = numMembers > 1 ? `people` : `person`;
 
-  socketMain.on("nsList", (nsData) => {
+  curNsSocket?.on("nsList", (nsData) => {
     setNamespaces(nsData);
+  });
+
+  curNsSocket?.on("updateMembers", (numMembers) => {
+    setNumMembers(numMembers);
   });
 
   function roomDataHandler(rD: Room[]) {
@@ -47,9 +68,11 @@ const Home: NextPage = () => {
   function socketDataHandler(curNS: Socket) {
     setCurNsSocket(curNS);
   }
-  function usersHandler(users: number) {
-    setNumMembers(users);
+
+  function unHandler(un: string) {
+    setUserName(un);
   }
+
   function roomTitleHandler(rmTitle: string) {
     setCurrentRoom(rmTitle);
   }
@@ -76,6 +99,7 @@ const Home: NextPage = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main>
+        <UserNameModal unHandler={unHandler} />
         <Flex
           flexDirection={{ base: "column", md: "row" }}
           h='100vh'
@@ -94,6 +118,7 @@ const Home: NextPage = () => {
             backgroundColor='blackAlpha.400'
           >
             <NsList
+              username={username}
               socketData={socketDataHandler}
               roomData={roomDataHandler}
               namespaces={namespaces}
@@ -115,7 +140,7 @@ const Home: NextPage = () => {
           >
             <RoomList
               curRoomTitle={roomTitleHandler}
-              usersInCurRoom={usersHandler}
+              // usersInCurRoom={usersHandler}
               curNsSocket={curNsSocket}
               rooms={roomData}
             />

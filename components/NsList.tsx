@@ -6,6 +6,7 @@ import { io, Socket } from "socket.io-client";
 import Room from "../models/Room";
 
 const NsList: React.FC<{
+  username: string;
   namespaces: Namespace[] | null;
   roomData: (roomData: Room[]) => void;
   socketData: (socketData: Socket) => void;
@@ -28,8 +29,17 @@ const NsList: React.FC<{
   }
 
   function nsClickHandler(ns: Namespace) {
-    if (nsSocket) nsSocket.close();
-    setNsSocket(io(`http://localhost:4000${ns.endpoint}`));
+    if (nsSocket) {
+      if (nsSocket?.nsp == ns.endpoint) {
+        return;
+      }
+      nsSocket.close();
+    }
+    setNsSocket(
+      io(`http://localhost:4000${ns.endpoint}`, {
+        query: { username: props.username },
+      })
+    );
   }
 
   if (props.namespaces) {

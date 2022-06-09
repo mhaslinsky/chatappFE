@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
@@ -14,10 +14,16 @@ interface ChatProps {
 
 const Chat: React.FC<ChatProps> = (props) => {
   const [messages, setMessages] = useState<message[]>([]);
+  const [updateType, setUpdateType] = useState<string>();
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
+    props.curNsSocket?.on("historyGET", (history) => {
+      setUpdateType("server");
+      setMessages(history);
+    });
     props.curNsSocket?.on("messageToClients", (msg: message) => {
+      setUpdateType("user");
       setMessages((prevState) => {
         return prevState.concat(msg);
       });
@@ -25,7 +31,12 @@ const Chat: React.FC<ChatProps> = (props) => {
   }, [props.curNsSocket]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (updateType == "user")
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    else {
+      messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
   return (
