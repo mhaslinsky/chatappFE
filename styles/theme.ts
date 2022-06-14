@@ -21,7 +21,7 @@ const overrides = {
 };
 
 const fonts = {
-  fonts: { heading: "Inter, sans-serif", body: "Inter, sans-serif" },
+  fonts: { heading: "Manrope, sans-serif", body: "Manrope, sans-serif" },
 };
 
 // 3. extend the theme

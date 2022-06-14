@@ -43,7 +43,15 @@ const Chat: React.FC<ChatProps> = (props) => {
     <Box overflow='auto' h='100%'>
       {messages.map((msg) => {
         return (
-          <Flex margin='1rem' gap='.4rem' alignItems='center' key={msg.time}>
+          <Flex
+            flexGrow='0'
+            borderRadius='1rem'
+            bg='whiteAlpha.100'
+            margin='1rem'
+            gap='.4rem'
+            alignItems='center'
+            key={msg.time}
+          >
             <Box
               flexShrink='0'
               overflow='hidden'

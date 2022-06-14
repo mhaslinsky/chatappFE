@@ -4,8 +4,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  ModalFooter,
-  Button,
   useDisclosure,
   Input,
   useToast,

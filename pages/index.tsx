@@ -19,6 +19,7 @@ interface FormValue {
 }
 
 const connectChatServer = (username: string) => {
+  console.log(process.env.SOCKETIO);
   const socketMain = io(`${process.env.SOCKETIO}`, {
     query: { username },
   });
@@ -102,7 +103,6 @@ const Home: NextPage = () => {
         <Flex
           flexDirection={{ base: "column", md: "row" }}
           h='100vh'
-          w='99vw'
           maxHeight='100%'
           maxWidth='calc(var(--vw, 1vw) * 100)'
         >
