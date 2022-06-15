@@ -1,7 +1,16 @@
 /* eslint-disable react/no-children-prop */
 import type { NextPage } from "next";
 import Head from "next/head";
-import { Box, Flex, Input, Switch, Text, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Input,
+  Switch,
+  Text,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/react";
 import NsList from "../components/NsList";
 import Namespace from "../models/Namespace";
@@ -13,6 +22,7 @@ import { ViewIcon } from "@chakra-ui/icons";
 import { useForm } from "react-hook-form";
 import Chat from "../components/Chat";
 import UserNameModal from "../components/Modal";
+import SlideDrawer from "../components/Drawer";
 
 interface FormValue {
   message: string;
@@ -27,6 +37,7 @@ const connectChatServer = (username: string) => {
 };
 
 const Home: NextPage = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const [roomData, setRoomData] = useState<Room[] | null>(null);
   const [curNsSocket, setCurNsSocket] = useState<Socket | null>(null);
@@ -92,6 +103,49 @@ const Home: NextPage = () => {
     }
   }
 
+  const nsRoomElement = (
+    <>
+      <Flex
+        display={{ base: "none", md: "flex" }}
+        flexDirection='column'
+        h='100%'
+        w='72px'
+        flexShrink='0'
+        alignItems='center'
+        justifyContent='space-between'
+        backgroundColor='blackAlpha.400'
+      >
+        <NsList
+          username={username}
+          socketData={socketDataHandler}
+          roomData={roomDataHandler}
+          namespaces={namespaces}
+        />
+        <Switch
+          backgroundColor='teal.600'
+          borderRadius='1rem'
+          onChange={toggleColorMode}
+          marginBottom='1rem'
+        />
+      </Flex>
+      <Flex
+        display={{ base: "none", md: "unset" }}
+        flexDirection='column'
+        h='100%'
+        w='240px'
+        flexShrink='0'
+        backgroundColor='blackAlpha.200'
+      >
+        <RoomList
+          curRoomTitle={roomTitleHandler}
+          // usersInCurRoom={usersHandler}
+          curNsSocket={curNsSocket}
+          rooms={roomData}
+        />
+      </Flex>
+    </>
+  );
+
   return (
     <div>
       <Head>
@@ -106,44 +160,15 @@ const Home: NextPage = () => {
           maxHeight='100%'
           maxWidth='calc(var(--vw, 1vw) * 100)'
         >
-          <Flex
-            display={{ base: "none", md: "flex" }}
-            flexDirection='column'
-            h='100%'
-            w='72px'
-            flexShrink='0'
-            alignItems='center'
-            justifyContent='space-between'
-            backgroundColor='blackAlpha.400'
+          <SlideDrawer
+            isOpen={isOpen}
+            onClose={() => {
+              onClose();
+            }}
           >
-            <NsList
-              username={username}
-              socketData={socketDataHandler}
-              roomData={roomDataHandler}
-              namespaces={namespaces}
-            />
-            <Switch
-              backgroundColor='teal.600'
-              borderRadius='1rem'
-              onChange={toggleColorMode}
-              marginBottom='1rem'
-            />
-          </Flex>
-          <Flex
-            display={{ base: "none", md: "unset" }}
-            flexDirection='column'
-            h='100%'
-            w='240px'
-            flexShrink='0'
-            backgroundColor='blackAlpha.200'
-          >
-            <RoomList
-              curRoomTitle={roomTitleHandler}
-              // usersInCurRoom={usersHandler}
-              curNsSocket={curNsSocket}
-              rooms={roomData}
-            />
-          </Flex>
+            {nsRoomElement}
+          </SlideDrawer>
+          {nsRoomElement}
           <Flex
             flexDirection='column'
             justifyContent='space-between'
@@ -156,6 +181,11 @@ const Home: NextPage = () => {
               justifyContent='flex-end'
               alignItems='center'
             >
+              <Button
+                onClick={() => {
+                  onOpen();
+                }}
+              ></Button>
               <ViewIcon />
               {/*@ts-ignore react18 bug*/}
               <Text

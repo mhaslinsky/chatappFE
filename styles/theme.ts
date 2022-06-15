@@ -26,7 +26,7 @@ const fonts = {
 
 // 3. extend the theme
 const theme = extendTheme(
-  config,
+  { config },
   overrides,
   fonts,
   withDefaultColorScheme({ colorScheme: "blue" })
