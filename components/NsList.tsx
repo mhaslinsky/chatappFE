@@ -7,6 +7,7 @@ import Room from "../models/Room";
 
 const NsList: React.FC<{
   username: string;
+  currentRoom: string | undefined;
   namespaces: Namespace[] | null;
   roomData: (roomData: Room[]) => void;
   socketData: (socketData: Socket) => void;
@@ -15,6 +16,7 @@ const NsList: React.FC<{
   const [nsSocket, setNsSocket] = useState<any>();
 
   useEffect(() => {
+    console.log("nslist UE firing");
     if (props.namespaces) {
       nsClickHandler(props.namespaces[0]);
     }
@@ -33,6 +35,7 @@ const NsList: React.FC<{
       if (nsSocket?.nsp == ns.endpoint) {
         return;
       }
+      nsSocket?.emit("leaveRoom", props.currentRoom);
       nsSocket.close();
     }
     setNsSocket(
@@ -87,7 +90,7 @@ const NsList: React.FC<{
       </Box>
     );
   } else {
-    return <p>Loading...</p>;
+    return <p></p>;
   }
 };
 

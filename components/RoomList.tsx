@@ -22,6 +22,7 @@ const RoomList: React.FC<{
   const [curRoom, setCurRoom] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log("roomlist UE firing");
     if (props.rooms) {
       roomClickHandler(props.rooms[0].roomTitle);
     }
@@ -29,8 +30,12 @@ const RoomList: React.FC<{
   }, [props.rooms]);
 
   function roomClickHandler(rm: string) {
-    if (curRoom) props.curNsSocket?.emit("leaveRoom", curRoom);
+    if (curRoom) {
+      console.log("leaving room");
+      props.curNsSocket?.emit("leaveRoom", curRoom);
+    }
     //client handles joining NS's, server handles joining rooms
+    console.log("joining room");
     props.curNsSocket!.emit("joinRoom", rm);
     setCurRoom(rm);
     props.curRoomTitle(rm);

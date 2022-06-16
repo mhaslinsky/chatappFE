@@ -23,13 +23,13 @@ import { useForm } from "react-hook-form";
 import Chat from "../components/Chat";
 import UserNameModal from "../components/Modal";
 import SlideDrawer from "../components/Drawer";
+import { flushSync } from "react-dom";
 
 interface FormValue {
   message: string;
 }
 
 const connectChatServer = (username: string) => {
-  console.log(process.env.SOCKETIO);
   const socketMain = io(`${process.env.SOCKETIO}`, {
     query: { username },
   });
@@ -117,6 +117,7 @@ const Home: NextPage = () => {
       >
         <NsList
           username={username}
+          currentRoom={currentRoom}
           socketData={socketDataHandler}
           roomData={roomDataHandler}
           namespaces={namespaces}
@@ -146,6 +147,52 @@ const Home: NextPage = () => {
     </>
   );
 
+  const nsRoomElementSD = (
+    <>
+      <Flex w='100%' h='100%' flexDirection='row'>
+        <Flex
+          display={{ base: "flex", md: "none" }}
+          flexDirection='column'
+          h='100%'
+          w='72px'
+          flexShrink='0'
+          alignItems='center'
+          justifyContent='space-between'
+          backgroundColor='blackAlpha.400'
+        >
+          <NsList
+            currentRoom={currentRoom}
+            username={username}
+            socketData={socketDataHandler}
+            roomData={roomDataHandler}
+            namespaces={namespaces}
+          />
+          <Switch
+            backgroundColor='teal.600'
+            borderRadius='1rem'
+            onChange={toggleColorMode}
+            marginBottom='1rem'
+          />
+        </Flex>
+        <Flex
+          display={{ base: "unset", md: "none" }}
+          flexDirection='column'
+          h='100%'
+          w='240px'
+          flexShrink='0'
+          backgroundColor='blackAlpha.200'
+        >
+          <RoomList
+            curRoomTitle={roomTitleHandler}
+            // usersInCurRoom={usersHandler}
+            curNsSocket={curNsSocket}
+            rooms={roomData}
+          />
+        </Flex>
+      </Flex>
+    </>
+  );
+
   return (
     <div>
       <Head>
@@ -154,20 +201,20 @@ const Home: NextPage = () => {
       </Head>
       <main>
         <UserNameModal unHandler={unHandler} />
+        <SlideDrawer
+          isOpen={isOpen}
+          onClose={() => {
+            onClose();
+          }}
+        >
+          {nsRoomElementSD}
+        </SlideDrawer>
         <Flex
           flexDirection={{ base: "column", md: "row" }}
           h='100vh'
           maxHeight='100%'
           maxWidth='calc(var(--vw, 1vw) * 100)'
         >
-          <SlideDrawer
-            isOpen={isOpen}
-            onClose={() => {
-              onClose();
-            }}
-          >
-            {nsRoomElement}
-          </SlideDrawer>
           {nsRoomElement}
           <Flex
             flexDirection='column'

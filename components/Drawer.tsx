@@ -6,6 +6,7 @@ import {
   DrawerHeader,
   DrawerBody,
   useDisclosure,
+  Flex,
 } from "@chakra-ui/react";
 
 interface DrawerProps {
@@ -19,7 +20,9 @@ const SideDrawer: React.FC<DrawerProps> = (props) => {
     <Drawer placement='left' onClose={props.onClose} isOpen={props.isOpen}>
       <DrawerOverlay />
       <DrawerContent>
-        <DrawerBody>{props.children}</DrawerBody>
+        <DrawerBody h='100%' p='0'>
+          {props.children}
+        </DrawerBody>
       </DrawerContent>
     </Drawer>
   );
