@@ -3,10 +3,7 @@ import {
   Drawer,
   DrawerOverlay,
   DrawerContent,
-  DrawerHeader,
   DrawerBody,
-  useDisclosure,
-  Flex,
 } from "@chakra-ui/react";
 
 interface DrawerProps {

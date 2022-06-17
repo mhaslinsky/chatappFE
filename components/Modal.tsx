@@ -8,18 +8,18 @@ import {
   Input,
   useToast,
 } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useForm } from "react-hook-form";
+import { SocketContext } from "../context/socket-context";
 
 interface FormValue {
   username: string;
 }
 
-const UserNameModal: React.FC<{
-  unHandler: (un: string) => void;
-}> = (props) => {
+const UserNameModal: React.FC<{}> = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
+  const ctx = useContext(SocketContext);
   const {
     handleSubmit,
     register,
@@ -33,7 +33,6 @@ const UserNameModal: React.FC<{
   }, []);
 
   function submitHandler(data: any) {
-    console.log(data.username);
     if (!data.username)
       toast({
         title: "Can't set an empty username! 😥",
@@ -43,7 +42,7 @@ const UserNameModal: React.FC<{
         isClosable: true,
       });
     else {
-      props.unHandler(data.username);
+      ctx.setUserName(data.username);
       onClose();
       reset({ username: "" });
     }

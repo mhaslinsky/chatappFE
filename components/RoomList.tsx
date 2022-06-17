@@ -22,8 +22,8 @@ const RoomList: React.FC<{
   const [curRoom, setCurRoom] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("roomlist UE firing");
     if (props.rooms) {
+      console.log("roomlist UE firing");
       roomClickHandler(props.rooms[0].roomTitle);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

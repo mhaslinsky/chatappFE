@@ -1,37 +1,36 @@
 import { Box, Flex, Tooltip, useColorModeValue } from "@chakra-ui/react";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Namespace from "../models/Namespace";
 import { io, Socket } from "socket.io-client";
 import Room from "../models/Room";
+import { SocketContext } from "../context/socket-context";
 
 const NsList: React.FC<{
-  username: string;
   currentRoom: string | undefined;
-  namespaces: Namespace[] | null;
   roomData: (roomData: Room[]) => void;
-  socketData: (socketData: Socket) => void;
 }> = (props) => {
   const bg = useColorModeValue("teal.400", "teal.600");
-  const [nsSocket, setNsSocket] = useState<any>();
+  const [nsSocket, setNsSocket] = useState<Socket | null>();
+  const ctx = useContext(SocketContext);
 
   useEffect(() => {
-    console.log("nslist UE firing");
-    if (props.namespaces) {
-      nsClickHandler(props.namespaces[0]);
+    if (ctx.availableNamespaces) {
+      nsClickHandler(ctx.availableNamespaces[0]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.namespaces]);
+  }, [ctx.availableNamespaces]);
 
   if (nsSocket) {
     nsSocket!.on("nsRoomLoad", (roomData: Room[]) => {
       props.roomData(roomData);
-      props.socketData(nsSocket);
+      ctx.setNamespace(nsSocket);
     });
   }
 
   function nsClickHandler(ns: Namespace) {
     if (nsSocket) {
+      /*@ts-ignore*/
       if (nsSocket?.nsp == ns.endpoint) {
         return;
       }
@@ -40,16 +39,17 @@ const NsList: React.FC<{
     }
     setNsSocket(
       io(`${process.env.SOCKETIO}${ns.endpoint}`, {
-        query: { username: props.username },
+        query: { username: ctx.userName },
       })
     );
   }
 
-  if (props.namespaces) {
+  if (ctx.availableNamespaces) {
     return (
       <Box marginTop='1rem'>
-        {props.namespaces.map((ns) => {
+        {ctx.availableNamespaces.map((ns) => {
           let backgroundColor;
+          /*@ts-ignore*/
           nsSocket?.nsp == ns.endpoint
             ? (backgroundColor = bg)
             : (backgroundColor = "blackAlpha.500");

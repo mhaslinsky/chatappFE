@@ -13,8 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/react";
 import NsList from "../components/NsList";
-import Namespace from "../models/Namespace";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Room from "../models/Room";
 import RoomList from "../components/RoomList";
 import { io, Socket } from "socket.io-client";
@@ -23,37 +22,36 @@ import { useForm } from "react-hook-form";
 import Chat from "../components/Chat";
 import UserNameModal from "../components/Modal";
 import SlideDrawer from "../components/Drawer";
-import { flushSync } from "react-dom";
+import { SocketContext } from "../context/socket-context";
 
 interface FormValue {
   message: string;
 }
 
-const connectChatServer = (username: string) => {
-  const socketMain = io(`${process.env.SOCKETIO}`, {
-    query: { username },
-  });
-  return socketMain;
-};
+// const connectChatServer = (username: string) => {
+//   const socketMain = io(`${process.env.SOCKETIO}`, {
+//     query: { username },
+//   });
+//   return socketMain;
+// };
 
 const Home: NextPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const [roomData, setRoomData] = useState<Room[] | null>(null);
-  const [curNsSocket, setCurNsSocket] = useState<Socket | null>(null);
-  const [namespaces, setNamespaces] = useState<Namespace[] | null>(null);
+  // const [curNsSocket, setCurNsSocket] = useState<Socket | null>(null);
   const [numMembers, setNumMembers] = useState<Number>(0);
   const [currentRoom, setCurrentRoom] = useState<string>();
-  const [username, setUserName] = useState<string>("");
+  const ctx = useContext(SocketContext);
 
-  useEffect(() => {
-    if (!username) return;
-    setCurNsSocket(connectChatServer(username));
-    return () => {
-      curNsSocket?.disconnect();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [username]);
+  // useEffect(() => {
+  //   if (!ctx.userName) return;
+  //   setCurNsSocket(connectChatServer(ctx.userName));
+  //   return () => {
+  //     curNsSocket?.disconnect();
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [ctx.userName]);
 
   const toast = useToast();
   const {
@@ -65,25 +63,20 @@ const Home: NextPage = () => {
 
   const people = numMembers > 1 ? `people` : `person`;
 
-  curNsSocket?.on("nsList", (nsData) => {
-    setNamespaces(nsData);
+  ctx.currentNamespace?.on("nsList", (nsData) => {
+    ctx.setAvailableNamespaces(nsData);
   });
 
-  curNsSocket?.on("updateMembers", (numMembers) => {
+  ctx.currentNamespace?.on("updateMembers", (numMembers) => {
     setNumMembers(numMembers);
   });
 
   function roomDataHandler(rD: Room[]) {
     setRoomData(rD);
   }
-  function socketDataHandler(curNS: Socket) {
-    setCurNsSocket(curNS);
-  }
-
-  function unHandler(un: string) {
-    setUserName(un);
-  }
-
+  // function socketDataHandler(curNS: Socket) {
+  //   setCurNsSocket(curNS);
+  // }
   function roomTitleHandler(rmTitle: string) {
     setCurrentRoom(rmTitle);
   }
@@ -98,7 +91,7 @@ const Home: NextPage = () => {
         isClosable: true,
       });
     else {
-      curNsSocket?.emit("newMessageToServer", { text: data.message });
+      ctx.currentNamespace?.emit("newMessageToServer", { text: data.message });
       reset({ message: "" });
     }
   }
@@ -115,13 +108,7 @@ const Home: NextPage = () => {
         justifyContent='space-between'
         backgroundColor='blackAlpha.400'
       >
-        <NsList
-          username={username}
-          currentRoom={currentRoom}
-          socketData={socketDataHandler}
-          roomData={roomDataHandler}
-          namespaces={namespaces}
-        />
+        <NsList currentRoom={currentRoom} roomData={roomDataHandler} />
         <Switch
           backgroundColor='teal.600'
           borderRadius='1rem'
@@ -140,7 +127,7 @@ const Home: NextPage = () => {
         <RoomList
           curRoomTitle={roomTitleHandler}
           // usersInCurRoom={usersHandler}
-          curNsSocket={curNsSocket}
+          curNsSocket={ctx.currentNamespace}
           rooms={roomData}
         />
       </Flex>
@@ -160,13 +147,7 @@ const Home: NextPage = () => {
           justifyContent='space-between'
           backgroundColor='blackAlpha.400'
         >
-          <NsList
-            currentRoom={currentRoom}
-            username={username}
-            socketData={socketDataHandler}
-            roomData={roomDataHandler}
-            namespaces={namespaces}
-          />
+          <NsList currentRoom={currentRoom} roomData={roomDataHandler} />
           <Switch
             backgroundColor='teal.600'
             borderRadius='1rem'
@@ -185,7 +166,7 @@ const Home: NextPage = () => {
           <RoomList
             curRoomTitle={roomTitleHandler}
             // usersInCurRoom={usersHandler}
-            curNsSocket={curNsSocket}
+            curNsSocket={ctx.currentNamespace}
             rooms={roomData}
           />
         </Flex>
@@ -200,7 +181,7 @@ const Home: NextPage = () => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main>
-        <UserNameModal unHandler={unHandler} />
+        <UserNameModal />
         <SlideDrawer
           isOpen={isOpen}
           onClose={() => {
@@ -241,7 +222,7 @@ const Home: NextPage = () => {
                 fontWeight='700'
               >{`\u00A0${numMembers} ${people} in here`}</Text>
             </Flex>
-            <Chat curNsSocket={curNsSocket} />
+            <Chat curNsSocket={ctx.currentNamespace} />
             <Box margin='.3rem'>
               <form onSubmit={handleSubmit(submitHandler)}>
                 <Input
