@@ -1,17 +1,13 @@
 import { Box, Flex, Tooltip, useColorModeValue } from "@chakra-ui/react";
 import Image from "next/image";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import Namespace from "../models/Namespace";
 import { io, Socket } from "socket.io-client";
 import Room from "../models/Room";
 import { SocketContext } from "../context/socket-context";
 
-const NsList: React.FC<{
-  currentRoom: string | undefined;
-  roomData: (roomData: Room[]) => void;
-}> = (props) => {
+const NsList: React.FC<{}> = (props) => {
   const bg = useColorModeValue("teal.400", "teal.600");
-  const [nsSocket, setNsSocket] = useState<Socket | null>();
   const ctx = useContext(SocketContext);
 
   useEffect(() => {
@@ -21,23 +17,22 @@ const NsList: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ctx.availableNamespaces]);
 
-  if (nsSocket) {
-    nsSocket!.on("nsRoomLoad", (roomData: Room[]) => {
-      props.roomData(roomData);
-      ctx.setNamespace(nsSocket);
+  if (ctx.currentNamespace) {
+    ctx.currentNamespace!.on("nsRoomLoad", (roomData: Room[]) => {
+      ctx.setAvailableRooms(roomData);
     });
   }
 
   function nsClickHandler(ns: Namespace) {
-    if (nsSocket) {
+    if (ctx.currentNamespace) {
       /*@ts-ignore*/
-      if (nsSocket?.nsp == ns.endpoint) {
+      if (ctx.currentNamespace?.nsp == ns.endpoint) {
         return;
       }
-      nsSocket?.emit("leaveRoom", props.currentRoom);
-      nsSocket.close();
+      ctx.currentNamespace?.emit("leaveRoom", ctx.currentRoom);
+      ctx.currentNamespace.close();
     }
-    setNsSocket(
+    ctx.setNamespace(
       io(`${process.env.SOCKETIO}${ns.endpoint}`, {
         query: { username: ctx.userName },
       })
@@ -50,7 +45,7 @@ const NsList: React.FC<{
         {ctx.availableNamespaces.map((ns) => {
           let backgroundColor;
           /*@ts-ignore*/
-          nsSocket?.nsp == ns.endpoint
+          ctx.currentNamespace?.nsp == ns.endpoint
             ? (backgroundColor = bg)
             : (backgroundColor = "blackAlpha.500");
           return (

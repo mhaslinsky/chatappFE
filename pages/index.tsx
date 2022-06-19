@@ -38,20 +38,8 @@ interface FormValue {
 const Home: NextPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
-  const [roomData, setRoomData] = useState<Room[] | null>(null);
-  // const [curNsSocket, setCurNsSocket] = useState<Socket | null>(null);
   const [numMembers, setNumMembers] = useState<Number>(0);
-  const [currentRoom, setCurrentRoom] = useState<string>();
   const ctx = useContext(SocketContext);
-
-  // useEffect(() => {
-  //   if (!ctx.userName) return;
-  //   setCurNsSocket(connectChatServer(ctx.userName));
-  //   return () => {
-  //     curNsSocket?.disconnect();
-  //   };
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [ctx.userName]);
 
   const toast = useToast();
   const {
@@ -70,16 +58,6 @@ const Home: NextPage = () => {
   ctx.currentNamespace?.on("updateMembers", (numMembers) => {
     setNumMembers(numMembers);
   });
-
-  function roomDataHandler(rD: Room[]) {
-    setRoomData(rD);
-  }
-  // function socketDataHandler(curNS: Socket) {
-  //   setCurNsSocket(curNS);
-  // }
-  function roomTitleHandler(rmTitle: string) {
-    setCurrentRoom(rmTitle);
-  }
 
   function submitHandler(data: any) {
     if (!data.message)
@@ -108,7 +86,7 @@ const Home: NextPage = () => {
         justifyContent='space-between'
         backgroundColor='blackAlpha.400'
       >
-        <NsList currentRoom={currentRoom} roomData={roomDataHandler} />
+        <NsList />
         <Switch
           backgroundColor='teal.600'
           borderRadius='1rem'
@@ -124,12 +102,7 @@ const Home: NextPage = () => {
         flexShrink='0'
         backgroundColor='blackAlpha.200'
       >
-        <RoomList
-          curRoomTitle={roomTitleHandler}
-          // usersInCurRoom={usersHandler}
-          curNsSocket={ctx.currentNamespace}
-          rooms={roomData}
-        />
+        <RoomList />
       </Flex>
     </>
   );
@@ -147,7 +120,7 @@ const Home: NextPage = () => {
           justifyContent='space-between'
           backgroundColor='blackAlpha.400'
         >
-          <NsList currentRoom={currentRoom} roomData={roomDataHandler} />
+          <NsList />
           <Switch
             backgroundColor='teal.600'
             borderRadius='1rem'
@@ -163,12 +136,7 @@ const Home: NextPage = () => {
           flexShrink='0'
           backgroundColor='blackAlpha.200'
         >
-          <RoomList
-            curRoomTitle={roomTitleHandler}
-            // usersInCurRoom={usersHandler}
-            curNsSocket={ctx.currentNamespace}
-            rooms={roomData}
-          />
+          <RoomList />
         </Flex>
       </Flex>
     </>
@@ -227,7 +195,7 @@ const Home: NextPage = () => {
               <form onSubmit={handleSubmit(submitHandler)}>
                 <Input
                   type='text'
-                  placeholder={`Message #${currentRoom}`}
+                  placeholder={`Message #${ctx.currentRoom}`}
                   id='message'
                   errorBorderColor='red'
                   {...register("message", {

@@ -7,41 +7,31 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { ChatIcon } from "@chakra-ui/icons";
-import React, { useEffect, useState } from "react";
-import { Socket } from "socket.io-client";
-import Room from "../models/Room";
+import React, { useEffect, useContext } from "react";
+import { SocketContext } from "../context/socket-context";
 
-const RoomList: React.FC<{
-  rooms: Room[] | null;
-  curNsSocket: Socket | null;
-  // usersInCurRoom: (users: number) => void;
-  curRoomTitle: (rmTitle: string) => void;
-}> = (props) => {
+const RoomList: React.FC<{}> = (props) => {
   const bg = useColorModeValue("blue.200", "blackAlpha.300");
   const hover = useColorModeValue("teal.300", "teal.700");
-  const [curRoom, setCurRoom] = useState<string | null>(null);
+  const ctx = useContext(SocketContext);
 
   useEffect(() => {
-    if (props.rooms) {
-      console.log("roomlist UE firing");
-      roomClickHandler(props.rooms[0].roomTitle);
+    if (ctx.availableRooms) {
+      roomClickHandler(ctx.availableRooms[0].roomTitle);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.rooms]);
+  }, [ctx.availableRooms]);
 
   function roomClickHandler(rm: string) {
-    if (curRoom) {
-      console.log("leaving room");
-      props.curNsSocket?.emit("leaveRoom", curRoom);
+    if (ctx.currentRoom) {
+      ctx.currentNamespace!.emit("leaveRoom", ctx.currentRoom);
     }
     //client handles joining NS's, server handles joining rooms
-    console.log("joining room");
-    props.curNsSocket!.emit("joinRoom", rm);
-    setCurRoom(rm);
-    props.curRoomTitle(rm);
+    ctx.currentNamespace!.emit("joinRoom", rm);
+    ctx.setRoom(rm);
   }
 
-  if (props.rooms) {
+  if (ctx.availableRooms) {
     return (
       <React.Fragment>
         <Heading
@@ -54,9 +44,9 @@ const RoomList: React.FC<{
         </Heading>
         <Divider />
         <Box marginTop='1rem'>
-          {props.rooms.map((rm) => {
+          {ctx.availableRooms.map((rm) => {
             let backgroundColor;
-            curRoom == rm.roomTitle
+            ctx.currentRoom == rm.roomTitle
               ? (backgroundColor = bg)
               : (backgroundColor = "unset");
             return (

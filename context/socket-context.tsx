@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Namespace from "../models/Namespace";
+import Room from "../models/Room";
 import { io, Socket } from "socket.io-client";
 
 type SocketContextObj = {
   setUserName: (un: string) => void;
   setAvailableNamespaces: (nsData: Namespace[]) => void;
+  setAvailableRooms: (roomData: Room[]) => void;
   setNamespace: (nsSocket: Socket) => void;
+  setRoom: (room: string) => void;
   availableNamespaces: Namespace[] | null;
+  availableRooms: Room[] | null;
   currentNamespace: Socket | null;
   currentRoom: string | null;
   userName: string | null;
@@ -15,19 +19,24 @@ type SocketContextObj = {
 export const SocketContext = React.createContext<SocketContextObj>({
   setUserName: (un: string) => {},
   setAvailableNamespaces: (nsData: Namespace[]) => {},
+  setAvailableRooms: (roomData: Room[]) => {},
   setNamespace: (nsSocket: Socket) => {},
+  setRoom: (room: string) => {},
   availableNamespaces: null,
+  availableRooms: null,
   currentNamespace: null,
   currentRoom: null,
   userName: null,
 });
 
 const SocketContextProvider: React.FC<{ children: any }> = (props) => {
-  const [userName, setUserName] = useState<string>("");
+  const [userName, setUN] = useState<string>("");
   const [availableNamespaces, setAvailableNamespaces] = useState<
     Namespace[] | null
   >(null);
-  const [curNsSocket, setCurNs] = useState<Socket | null>(null);
+  const [availableRooms, setAvailableRooms] = useState<Room[] | null>(null);
+  const [currentNamespace, setCurrentNamespace] = useState<Socket | null>(null);
+  const [currentRoom, setCurrentRoom] = useState<string | null>(null);
 
   const connectChatServer = (username: string) => {
     const socketMain = io(`${process.env.SOCKETIO}`, {
@@ -38,33 +47,40 @@ const SocketContextProvider: React.FC<{ children: any }> = (props) => {
 
   useEffect(() => {
     if (!userName) return;
-    setCurNs(connectChatServer(userName));
+    setCurrentNamespace(connectChatServer(userName));
     return () => {
-      curNsSocket?.disconnect();
+      currentNamespace?.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userName]);
 
   function setNamespace(nsSocket: Socket) {
-    setCurNs(nsSocket);
+    setCurrentNamespace(nsSocket);
   }
-
-  function setUN(un: string) {
-    setUserName(un);
+  function setRoom(room: string) {
+    setCurrentRoom(room);
   }
-
+  function setUserName(un: string) {
+    setUN(un);
+  }
   function setNSs(nsData: Namespace[]) {
     setAvailableNamespaces(nsData);
   }
+  function setRMs(rmData: Room[]) {
+    setAvailableRooms(rmData);
+  }
 
   const contextValue: SocketContextObj = {
-    setUserName: setUN,
+    setUserName,
     setAvailableNamespaces: setNSs,
+    setAvailableRooms: setRMs,
     setNamespace,
+    setRoom,
     userName,
     availableNamespaces,
-    currentNamespace: curNsSocket,
-    currentRoom: null,
+    currentNamespace,
+    availableRooms,
+    currentRoom,
   };
 
   return (
