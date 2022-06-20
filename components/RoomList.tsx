@@ -1,11 +1,4 @@
-import {
-  Box,
-  Divider,
-  Flex,
-  Heading,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Box, Divider, Flex, Heading, Text, useColorModeValue } from "@chakra-ui/react";
 import { ChatIcon } from "@chakra-ui/icons";
 import React, { useEffect, useContext, useState } from "react";
 import { SocketContext } from "../context/socket-context";
@@ -46,21 +39,14 @@ const RoomList: React.FC<{}> = (props) => {
   if (ctx.availableRooms) {
     return (
       <React.Fragment>
-        <Heading
-          letterSpacing='.1rem'
-          marginLeft='.4rem'
-          marginTop='1rem'
-          marginBottom='.5rem'
-        >
+        <Heading letterSpacing='.1rem' marginLeft='.4rem' marginTop='1rem' marginBottom='.5rem'>
           Rooms
         </Heading>
         <Divider />
         <Box marginTop='1rem'>
           {ctx.availableRooms.map((rm) => {
             let backgroundColor;
-            ctx.currentRoom == rm.roomTitle
-              ? (backgroundColor = bg)
-              : (backgroundColor = "unset");
+            ctx.currentRoom == rm.roomTitle ? (backgroundColor = bg) : (backgroundColor = "unset");
             return (
               <Flex
                 onClick={() => {

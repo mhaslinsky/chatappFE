@@ -32,9 +32,7 @@ export const SocketContext = React.createContext<SocketContextObj>({
 
 const SocketContextProvider: React.FC<{ children: any }> = (props) => {
   const [userName, setUN] = useState<string>("");
-  const [availableNamespaces, setAvailableNamespaces] = useState<
-    Namespace[] | null
-  >(null);
+  const [availableNamespaces, setAvailableNamespaces] = useState<Namespace[] | null>(null);
   const [availableRooms, setAvailableRooms] = useState<Room[] | null>(null);
   const [currentNamespace, setCurrentNamespace] = useState<Socket | null>(null);
   const [currentRoom, setCurrentRoom] = useState<string | null>(null);
@@ -51,9 +49,7 @@ const SocketContextProvider: React.FC<{ children: any }> = (props) => {
     let currentSocket;
     if (!userName) return;
     if (localStorage.getItem("lastNamespace")) {
-      const lastNamespace = JSON.parse(
-        localStorage.getItem("lastNamespace")!
-      ).namespace;
+      const lastNamespace = JSON.parse(localStorage.getItem("lastNamespace")!).namespace;
       currentSocket = io(`${process.env.SOCKETIO}${lastNamespace}`, {
         query: { username: userName },
       });
@@ -81,10 +77,8 @@ const SocketContextProvider: React.FC<{ children: any }> = (props) => {
   });
 
   function setNamespace(nsSocket: Socket) {
-    localStorage.setItem(
-      "lastNamespace",
-      JSON.stringify({ namespace: nsSocket.nsp })
-    );
+    /*@ts-ignore*/
+    localStorage.setItem("lastNamespace", JSON.stringify({ namespace: nsSocket.nsp }));
     setCurrentNamespace(nsSocket);
   }
   function setRoom(room: string) {
@@ -114,11 +108,7 @@ const SocketContextProvider: React.FC<{ children: any }> = (props) => {
     currentRoom,
   };
 
-  return (
-    <SocketContext.Provider value={contextValue}>
-      {props.children}
-    </SocketContext.Provider>
-  );
+  return <SocketContext.Provider value={contextValue}>{props.children}</SocketContext.Provider>;
 };
 
 export default SocketContextProvider;
