@@ -13,27 +13,19 @@ import {
 } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/react";
 import NsList from "../components/NsList";
-import React, { useContext, useEffect, useState } from "react";
-import Room from "../models/Room";
+import React, { useContext, useState } from "react";
 import RoomList from "../components/RoomList";
-import { io, Socket } from "socket.io-client";
 import { ViewIcon } from "@chakra-ui/icons";
 import { useForm } from "react-hook-form";
 import Chat from "../components/Chat";
 import UserNameModal from "../components/Modal";
 import SlideDrawer from "../components/Drawer";
 import { SocketContext } from "../context/socket-context";
+import Room from "../models/Room";
 
 interface FormValue {
   message: string;
 }
-
-// const connectChatServer = (username: string) => {
-//   const socketMain = io(`${process.env.SOCKETIO}`, {
-//     query: { username },
-//   });
-//   return socketMain;
-// };
 
 const Home: NextPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -51,12 +43,12 @@ const Home: NextPage = () => {
 
   const people = numMembers > 1 ? `people` : `person`;
 
-  ctx.currentNamespace?.on("nsList", (nsData) => {
-    ctx.setAvailableNamespaces(nsData);
-  });
-
   ctx.currentNamespace?.on("updateMembers", (numMembers) => {
     setNumMembers(numMembers);
+  });
+
+  ctx.currentNamespace?.on("nsRoomLoad", (roomData: Room[]) => {
+    ctx.setAvailableRooms(roomData);
   });
 
   function submitHandler(data: any) {
@@ -190,7 +182,7 @@ const Home: NextPage = () => {
                 fontWeight='700'
               >{`\u00A0${numMembers} ${people} in here`}</Text>
             </Flex>
-            <Chat curNsSocket={ctx.currentNamespace} />
+            <Chat />
             <Box margin='.3rem'>
               <form onSubmit={handleSubmit(submitHandler)}>
                 <Input

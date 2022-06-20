@@ -1,43 +1,45 @@
 import { Box, Flex, Tooltip, useColorModeValue } from "@chakra-ui/react";
 import Image from "next/image";
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useCallback } from "react";
 import Namespace from "../models/Namespace";
-import { io, Socket } from "socket.io-client";
-import Room from "../models/Room";
+import { io } from "socket.io-client";
 import { SocketContext } from "../context/socket-context";
 
 const NsList: React.FC<{}> = (props) => {
   const bg = useColorModeValue("teal.400", "teal.600");
   const ctx = useContext(SocketContext);
 
+  const nsClickHandler = useCallback(
+    (ns: Namespace) => {
+      if (ctx.currentNamespace) {
+        /*@ts-ignore*/
+        if (ctx.currentNamespace?.nsp == ns.endpoint) {
+          return;
+        }
+        ctx.currentNamespace?.emit("leaveRoom", ctx.currentRoom);
+        ctx.currentNamespace.close();
+      }
+      ctx.setNamespace(
+        io(`${process.env.SOCKETIO}${ns.endpoint}`, {
+          query: { username: ctx.userName },
+        })
+      );
+    },
+    [ctx]
+  );
+
   useEffect(() => {
+    /*@ts-ignore*/
+    if (ctx.currentNamespace?.nsp !== "/") return;
     if (ctx.availableNamespaces) {
       nsClickHandler(ctx.availableNamespaces[0]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ctx.availableNamespaces]);
-
-  if (ctx.currentNamespace) {
-    ctx.currentNamespace!.on("nsRoomLoad", (roomData: Room[]) => {
-      ctx.setAvailableRooms(roomData);
-    });
-  }
-
-  function nsClickHandler(ns: Namespace) {
-    if (ctx.currentNamespace) {
-      /*@ts-ignore*/
-      if (ctx.currentNamespace?.nsp == ns.endpoint) {
-        return;
-      }
-      ctx.currentNamespace?.emit("leaveRoom", ctx.currentRoom);
-      ctx.currentNamespace.close();
-    }
-    ctx.setNamespace(
-      io(`${process.env.SOCKETIO}${ns.endpoint}`, {
-        query: { username: ctx.userName },
-      })
-    );
-  }
+  }, [
+    ctx.availableNamespaces,
+    ctx.currentNamespace,
+    ctx.userName,
+    nsClickHandler,
+  ]);
 
   if (ctx.availableNamespaces) {
     return (

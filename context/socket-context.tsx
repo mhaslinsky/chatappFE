@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Namespace from "../models/Namespace";
 import Room from "../models/Room";
 import { io, Socket } from "socket.io-client";
+import { json } from "stream/consumers";
 
 type SocketContextObj = {
   setUserName: (un: string) => void;
@@ -45,19 +46,49 @@ const SocketContextProvider: React.FC<{ children: any }> = (props) => {
     return socketMain;
   };
 
+  //login logic
   useEffect(() => {
+    let currentSocket;
     if (!userName) return;
-    setCurrentNamespace(connectChatServer(userName));
+    if (localStorage.getItem("lastNamespace")) {
+      const lastNamespace = JSON.parse(
+        localStorage.getItem("lastNamespace")!
+      ).namespace;
+      currentSocket = io(`${process.env.SOCKETIO}${lastNamespace}`, {
+        query: { username: userName },
+      });
+      setCurrentNamespace(currentSocket);
+      if (localStorage.getItem("lastRoom")) {
+        const lastRoom = JSON.parse(localStorage.getItem("lastRoom")!).room;
+        setCurrentRoom(lastRoom);
+        currentSocket?.emit("joinRoom", lastRoom);
+      }
+    } else {
+      setCurrentNamespace(connectChatServer(userName));
+    }
     return () => {
       currentNamespace?.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userName]);
 
+  currentNamespace?.on("nsList", (nsData) => {
+    setAvailableNamespaces(nsData);
+  });
+
+  currentNamespace?.on("nsRoomLoad", (roomData: Room[]) => {
+    setAvailableRooms(roomData);
+  });
+
   function setNamespace(nsSocket: Socket) {
+    localStorage.setItem(
+      "lastNamespace",
+      JSON.stringify({ namespace: nsSocket.nsp })
+    );
     setCurrentNamespace(nsSocket);
   }
   function setRoom(room: string) {
+    localStorage.setItem("lastRoom", JSON.stringify({ room }));
     setCurrentRoom(room);
   }
   function setUserName(un: string) {

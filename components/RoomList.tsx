@@ -7,15 +7,27 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { ChatIcon } from "@chakra-ui/icons";
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { SocketContext } from "../context/socket-context";
+import Room from "../models/Room";
 
 const RoomList: React.FC<{}> = (props) => {
   const bg = useColorModeValue("blue.200", "blackAlpha.300");
   const hover = useColorModeValue("teal.300", "teal.700");
   const ctx = useContext(SocketContext);
+  const [localRooms, setLocalRooms] = useState<Room[] | null>(null);
 
   useEffect(() => {
+    /*@ts-ignore*/
+    if (ctx.currentNamespace?.nsp == "/") return;
+    if (ctx.currentNamespace) {
+      setLocalRooms(ctx.availableRooms);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ctx.currentNamespace]);
+
+  useEffect(() => {
+    if (!localRooms) return;
     if (ctx.availableRooms) {
       roomClickHandler(ctx.availableRooms[0].roomTitle);
     }

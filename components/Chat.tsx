@@ -1,34 +1,32 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
-import { Socket } from "socket.io-client";
+import React, { useEffect, useRef, useState, useContext } from "react";
+import { SocketContext } from "../context/socket-context";
 interface message {
   text: string;
   time: any;
   username: string;
   avatar: string;
 }
-interface ChatProps {
-  curNsSocket: Socket | null;
-}
 
-const Chat: React.FC<ChatProps> = (props) => {
+const Chat: React.FC<{}> = (props) => {
   const [messages, setMessages] = useState<message[]>([]);
   const [updateType, setUpdateType] = useState<string>();
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
+  const ctx = useContext(SocketContext);
 
   useEffect(() => {
-    props.curNsSocket?.on("historyGET", (history) => {
+    ctx.currentNamespace?.on("historyGET", (history) => {
       setUpdateType("server");
       setMessages(history);
     });
-    props.curNsSocket?.on("messageToClients", (msg: message) => {
+    ctx.currentNamespace?.on("messageToClients", (msg: message) => {
       setUpdateType("user");
       setMessages((prevState) => {
         return prevState.concat(msg);
       });
     });
-  }, [props.curNsSocket]);
+  }, [ctx.currentNamespace]);
 
   useEffect(() => {
     if (updateType == "user")
