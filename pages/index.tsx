@@ -1,16 +1,7 @@
 /* eslint-disable react/no-children-prop */
 import type { NextPage } from "next";
 import Head from "next/head";
-import {
-  Box,
-  Button,
-  Flex,
-  Input,
-  Switch,
-  Text,
-  useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Input, Switch, Text, useDisclosure, useToast } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/react";
 import NsList from "../components/NsList";
 import React, { useContext, useState } from "react";
@@ -22,6 +13,7 @@ import UserNameModal from "../components/Modal";
 import SlideDrawer from "../components/Drawer";
 import { SocketContext } from "../context/socket-context";
 import Room from "../models/Room";
+import { useSwipeable } from "react-swipeable";
 
 interface FormValue {
   message: string;
@@ -32,6 +24,11 @@ const Home: NextPage = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const [numMembers, setNumMembers] = useState<Number>(0);
   const ctx = useContext(SocketContext);
+  const swipeHandlers = useSwipeable({
+    onSwipedRight: () => {
+      onOpen();
+    },
+  });
 
   const toast = useToast();
   const {
@@ -79,12 +76,7 @@ const Home: NextPage = () => {
         backgroundColor='blackAlpha.400'
       >
         <NsList />
-        <Switch
-          backgroundColor='teal.600'
-          borderRadius='1rem'
-          onChange={toggleColorMode}
-          marginBottom='1rem'
-        />
+        <Switch backgroundColor='teal.600' borderRadius='1rem' onChange={toggleColorMode} marginBottom='1rem' />
       </Flex>
       <Flex
         display={{ base: "none", md: "unset" }}
@@ -101,7 +93,7 @@ const Home: NextPage = () => {
 
   const nsRoomElementSD = (
     <>
-      <Flex w='100%' h='100%' flexDirection='row'>
+      <Flex h='100%' flexDirection='row'>
         <Flex
           display={{ base: "flex", md: "none" }}
           flexDirection='column'
@@ -110,23 +102,18 @@ const Home: NextPage = () => {
           flexShrink='0'
           alignItems='center'
           justifyContent='space-between'
-          backgroundColor='blackAlpha.400'
+          backgroundColor='blackAlpha.600'
         >
           <NsList />
-          <Switch
-            backgroundColor='teal.600'
-            borderRadius='1rem'
-            onChange={toggleColorMode}
-            marginBottom='1rem'
-          />
+          <Switch backgroundColor='teal.600' borderRadius='1rem' onChange={toggleColorMode} marginBottom='1rem' />
         </Flex>
         <Flex
           display={{ base: "unset", md: "none" }}
           flexDirection='column'
           h='100%'
-          w='240px'
+          w='248px'
           flexShrink='0'
-          backgroundColor='blackAlpha.200'
+          backgroundColor='blackAlpha.400'
         >
           <RoomList />
         </Flex>
@@ -150,25 +137,19 @@ const Home: NextPage = () => {
         >
           {nsRoomElementSD}
         </SlideDrawer>
-        <Flex
-          flexDirection={{ base: "column", md: "row" }}
-          h='100vh'
-          maxHeight='100%'
-          maxWidth='calc(var(--vw, 1vw) * 100)'
-        >
+        <Flex flexDirection={{ base: "column", md: "row" }} h='100vh' maxHeight='100%' maxWidth='calc(var(--vw, 1vw) * 100)'>
           {nsRoomElement}
-          <Flex
-            flexDirection='column'
-            justifyContent='space-between'
+          <Box
+            pointerEvents='none'
+            {...swipeHandlers}
+            w='100%'
             h='100%'
-            flexGrow='1'
-          >
-            <Flex
-              marginTop='1.5rem'
-              marginRight='1rem'
-              justifyContent='flex-end'
-              alignItems='center'
-            >
+            display={{ base: "unset", md: "none" }}
+            position='absolute'
+            zIndex='4'
+          ></Box>
+          <Flex flexDirection='column' justifyContent='space-between' h='100%' flexGrow='1'>
+            <Flex marginTop='1.5rem' marginRight='1rem' justifyContent='flex-end' alignItems='center'>
               <Button
                 onClick={() => {
                   onOpen();
@@ -176,11 +157,7 @@ const Home: NextPage = () => {
               ></Button>
               <ViewIcon />
               {/*@ts-ignore react18 bug*/}
-              <Text
-                fontSize='smaller'
-                letterSpacing='.06rem'
-                fontWeight='700'
-              >{`\u00A0${numMembers} ${people} in here`}</Text>
+              <Text fontSize='smaller' letterSpacing='.06rem' fontWeight='700'>{`\u00A0${numMembers} ${people} in here`}</Text>
             </Flex>
             <Chat />
             <Box margin='.3rem'>
