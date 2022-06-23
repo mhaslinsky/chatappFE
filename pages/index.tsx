@@ -1,12 +1,12 @@
 /* eslint-disable react/no-children-prop */
 import type { NextPage } from "next";
 import Head from "next/head";
-import { Box, Button, Flex, Input, Switch, Text, useDisclosure, useToast } from "@chakra-ui/react";
+import { Box, Button, Flex, IconButton, Input, Switch, Text, useDisclosure, useToast } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/react";
 import NsList from "../components/NsList";
 import React, { useContext, useState } from "react";
 import RoomList from "../components/RoomList";
-import { ViewIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, ViewIcon } from "@chakra-ui/icons";
 import { useForm } from "react-hook-form";
 import Chat from "../components/Chat";
 import UserNameModal from "../components/Modal";
@@ -127,7 +127,7 @@ const Home: NextPage = () => {
         <title>Slackish</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main>
+      <main {...swipeHandlers}>
         <UserNameModal />
         <SlideDrawer
           isOpen={isOpen}
@@ -139,25 +139,36 @@ const Home: NextPage = () => {
         </SlideDrawer>
         <Flex flexDirection={{ base: "column", md: "row" }} h='100vh' maxHeight='100%' maxWidth='calc(var(--vw, 1vw) * 100)'>
           {nsRoomElement}
-          <Box
+          {/* <Box
             pointerEvents='none'
-            {...swipeHandlers}
             w='100%'
             h='100%'
             display={{ base: "unset", md: "none" }}
             position='absolute'
             zIndex='4'
-          ></Box>
+          ></Box> */}
           <Flex flexDirection='column' justifyContent='space-between' h='100%' flexGrow='1'>
-            <Flex marginTop='1.5rem' marginRight='1rem' justifyContent='flex-end' alignItems='center'>
-              <Button
+            <Flex
+              marginTop='1.5rem'
+              marginRight='1rem'
+              justifyContent={{ base: "space-between", md: "flex-end" }}
+              alignItems='center'
+            >
+              <IconButton
+                display={{ base: "unset", md: "none" }}
+                variant='ghost'
+                ml='1rem'
                 onClick={() => {
                   onOpen();
                 }}
-              ></Button>
-              <ViewIcon />
-              {/*@ts-ignore react18 bug*/}
-              <Text fontSize='smaller' letterSpacing='.06rem' fontWeight='700'>{`\u00A0${numMembers} ${people} in here`}</Text>
+                icon={<HamburgerIcon h={8} w={8} />}
+                aria-label={"Expand Drawer"}
+              ></IconButton>
+              <Flex flexDirection='row'>
+                <ViewIcon />
+                {/*@ts-ignore react18 bug*/}
+                <Text fontSize='smaller' letterSpacing='.06rem' fontWeight='700'>{`\u00A0${numMembers} ${people} in here`}</Text>
+              </Flex>
             </Flex>
             <Chat />
             <Box margin='.3rem'>

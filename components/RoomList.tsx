@@ -40,7 +40,8 @@ const RoomList: React.FC<{}> = (props) => {
     return (
       <React.Fragment>
         <Heading letterSpacing='.1rem' marginLeft='.4rem' marginTop='1rem' marginBottom='.5rem'>
-          Rooms
+          {/*@ts-ignore*/}
+          {ctx.currentNamespace?.nsp.slice(1)}
         </Heading>
         <Divider />
         <Box marginTop='1rem'>
