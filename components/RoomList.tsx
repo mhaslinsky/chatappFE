@@ -39,8 +39,8 @@ const RoomList: React.FC<{}> = (props) => {
   if (ctx.availableRooms) {
     return (
       <React.Fragment>
-        <Box h='2.3rem' boxShadow='0 4px 4px -2px #00000061' paddingBottom='1rem'>
-          <Heading letterSpacing='.1rem' marginLeft='.4rem' marginTop='1rem'>
+        <Box boxShadow='0 4px 4px -2px #00000061' paddingBottom='.45rem'>
+          <Heading fontSize='3xl' letterSpacing='.1rem' marginLeft='.4rem' marginTop='.6rem'>
             {/*@ts-ignore*/}
             {ctx.currentNamespace?.nsp.slice(1)}
           </Heading>
