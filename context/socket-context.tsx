@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Namespace from "../models/Namespace";
 import Room from "../models/Room";
 import { io, Socket } from "socket.io-client";
-import { json } from "stream/consumers";
 
 type SocketContextObj = {
   setUserName: (un: string) => void;

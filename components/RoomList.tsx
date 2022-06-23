@@ -39,11 +39,12 @@ const RoomList: React.FC<{}> = (props) => {
   if (ctx.availableRooms) {
     return (
       <React.Fragment>
-        <Heading letterSpacing='.1rem' marginLeft='.4rem' marginTop='1rem' marginBottom='.5rem'>
-          {/*@ts-ignore*/}
-          {ctx.currentNamespace?.nsp.slice(1)}
-        </Heading>
-        <Divider />
+        <Box h='2.3rem' boxShadow='0 4px 4px -2px #00000061' paddingBottom='1rem'>
+          <Heading letterSpacing='.1rem' marginLeft='.4rem' marginTop='1rem'>
+            {/*@ts-ignore*/}
+            {ctx.currentNamespace?.nsp.slice(1)}
+          </Heading>
+        </Box>
         <Box marginTop='1rem'>
           {ctx.availableRooms.map((rm) => {
             let backgroundColor;

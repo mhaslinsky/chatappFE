@@ -1,7 +1,7 @@
 /* eslint-disable react/no-children-prop */
 import type { NextPage } from "next";
 import Head from "next/head";
-import { Box, Button, Flex, IconButton, Input, Switch, Text, useDisclosure, useToast } from "@chakra-ui/react";
+import { Box, Flex, IconButton, Input, Switch, Text, useDisclosure, useToast } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/react";
 import NsList from "../components/NsList";
 import React, { useContext, useState } from "react";
@@ -149,8 +149,11 @@ const Home: NextPage = () => {
           ></Box> */}
           <Flex flexDirection='column' justifyContent='space-between' h='100%' flexGrow='1'>
             <Flex
-              marginTop='1.5rem'
-              marginRight='1rem'
+              h='2.5rem'
+              boxShadow='0 4px 4px -2px #00000051'
+              marginTop='1rem'
+              paddingBottom='.5rem'
+              paddingRight='1rem'
               justifyContent={{ base: "space-between", md: "flex-end" }}
               alignItems='center'
             >
