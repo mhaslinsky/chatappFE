@@ -174,8 +174,10 @@ const Home: NextPage = () => {
             <Box margin='.3rem'>
               <form onSubmit={handleSubmit(submitHandler)}>
                 <Input
+                  variant='filled'
                   type='text'
                   placeholder={`Message #${ctx.currentRoom}`}
+                  _placeholder={{ color: "gray.500", fontWeight: "600", letterSpacing: ".03rem" }}
                   id='message'
                   errorBorderColor='red'
                   {...register("message", {
