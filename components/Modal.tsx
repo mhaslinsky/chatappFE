@@ -9,11 +9,14 @@ import {
   useToast,
   Text,
   Button,
+  Box,
+  Icon,
 } from "@chakra-ui/react";
 import React, { useEffect, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { SocketContext } from "../context/socket-context";
 import { signIn, useSession } from "next-auth/react";
+import { FaDiscord, FaGoogle } from "react-icons/fa";
 
 interface FormValue {
   username: string;
@@ -68,11 +71,14 @@ const UserNameModal: React.FC<{}> = (props) => {
     <Modal isCentered closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Please Select a Username!</ModalHeader>
+        <ModalHeader mb='-3.5'>Please Choose a Username!</ModalHeader>
         <ModalBody>
           <form onSubmit={handleSubmit(submitHandler)}>
             <Input
               type='text'
+              variant='filled'
+              fontWeight={500}
+              letterSpacing='.05rem'
               placeholder={`Username`}
               id='username'
               errorBorderColor='red'
@@ -81,16 +87,30 @@ const UserNameModal: React.FC<{}> = (props) => {
               })}
             />
           </form>
-          <Text mt='1rem'>Or sign in with Google!</Text>
-          <Button
-            isLoading={loading}
-            loadingText='Loading'
-            onClick={() => {
-              signIn("google");
-            }}
-          >
-            Google
-          </Button>
+          <Text mt='3.5'>Or select another method to login</Text>
+          <Box>
+            <Button
+              leftIcon={<Icon as={FaGoogle} />}
+              mr='.5rem'
+              isLoading={loading}
+              loadingText='Loading'
+              onClick={() => {
+                signIn("google");
+              }}
+            >
+              Google
+            </Button>
+            <Button
+              leftIcon={<Icon as={FaDiscord} />}
+              isLoading={loading}
+              loadingText='Loading'
+              onClick={() => {
+                signIn("discord");
+              }}
+            >
+              Discord
+            </Button>
+          </Box>
         </ModalBody>
       </ModalContent>
     </Modal>

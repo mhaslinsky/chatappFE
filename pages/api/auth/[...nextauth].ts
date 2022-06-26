@@ -1,6 +1,6 @@
-import NextAuth, { Account } from "next-auth";
-import { JWT } from "next-auth/jwt";
+import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import DiscordProvider from "next-auth/providers/discord";
 
 export default NextAuth({
   // Configure one or more authentication providers
@@ -15,6 +15,10 @@ export default NextAuth({
           response_type: "code",
         },
       },
+    }),
+    DiscordProvider({
+      clientId: process.env.DISCORD_CLIENT_ID!,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET!,
     }),
     // ...add more providers here
   ],
