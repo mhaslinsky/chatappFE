@@ -6,7 +6,8 @@ import { io } from "socket.io-client";
 import { SocketContext } from "../context/socket-context";
 
 const NsList: React.FC<{}> = (props) => {
-  const bg = useColorModeValue("teal.400", "teal.600");
+  const bg = useColorModeValue("teal.400", "blue.600");
+  const ttClr = useColorModeValue("black", "gray.300");
   const ctx = useContext(SocketContext);
 
   const nsClickHandler = useCallback(
@@ -34,12 +35,7 @@ const NsList: React.FC<{}> = (props) => {
     if (ctx.availableNamespaces) {
       nsClickHandler(ctx.availableNamespaces[0]);
     }
-  }, [
-    ctx.availableNamespaces,
-    ctx.currentNamespace,
-    ctx.userName,
-    nsClickHandler,
-  ]);
+  }, [ctx.availableNamespaces, ctx.currentNamespace, ctx.userName, nsClickHandler]);
 
   if (ctx.availableNamespaces) {
     return (
@@ -47,15 +43,14 @@ const NsList: React.FC<{}> = (props) => {
         {ctx.availableNamespaces.map((ns) => {
           let backgroundColor;
           /*@ts-ignore*/
-          ctx.currentNamespace?.nsp == ns.endpoint
-            ? (backgroundColor = bg)
-            : (backgroundColor = "blackAlpha.500");
+          ctx.currentNamespace?.nsp == ns.endpoint ? (backgroundColor = bg) : (backgroundColor = "blackAlpha.500");
           return (
             <Tooltip
               boxShadow='1px 3px 6px 2px rgba(0, 0, 0, 0.2)'
               borderRadius='1rem'
               fontSize='lg'
               fontWeight='700'
+              color={ttClr}
               backgroundColor={bg}
               placement='right'
               label={ns.endpoint.substring(1)}
@@ -74,12 +69,7 @@ const NsList: React.FC<{}> = (props) => {
                 backgroundColor={backgroundColor}
                 padding='.2rem'
               >
-                <Image
-                  width='100'
-                  height='100'
-                  alt={ns.endpoint}
-                  src={ns.img}
-                />
+                <Image width='100' height='100' alt={ns.endpoint} src={ns.img} />
               </Flex>
             </Tooltip>
           );

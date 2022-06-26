@@ -14,6 +14,7 @@ import SlideDrawer from "../components/Drawer";
 import { SocketContext } from "../context/socket-context";
 import Room from "../models/Room";
 import { useSwipeable } from "react-swipeable";
+import { signIn, useSession } from "next-auth/react";
 
 interface FormValue {
   message: string;
@@ -24,12 +25,12 @@ const Home: NextPage = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const [numMembers, setNumMembers] = useState<Number>(0);
   const ctx = useContext(SocketContext);
+  const { data: session, status } = useSession();
   const swipeHandlers = useSwipeable({
     onSwipedRight: () => {
       onOpen();
     },
   });
-
   const toast = useToast();
   const {
     handleSubmit,
@@ -48,6 +49,9 @@ const Home: NextPage = () => {
     ctx.setAvailableRooms(roomData);
   });
 
+  // console.log(data);
+  // console.log(status);
+
   function submitHandler(data: any) {
     if (!data.message)
       toast({
@@ -58,8 +62,12 @@ const Home: NextPage = () => {
         isClosable: true,
       });
     else {
-      ctx.currentNamespace?.emit("newMessageToServer", { text: data.message });
-      reset({ message: "" });
+      if (status == "authenticated") {
+        ctx.currentNamespace?.emit("newMessageToServer", { text: data.message, img: session.user?.image });
+      } else {
+        ctx.currentNamespace?.emit("newMessageToServer", { text: data.message });
+        reset({ message: "" });
+      }
     }
   }
 
@@ -76,7 +84,7 @@ const Home: NextPage = () => {
         backgroundColor='blackAlpha.400'
       >
         <NsList />
-        <Switch backgroundColor='teal.600' borderRadius='1rem' onChange={toggleColorMode} marginBottom='1rem' />
+        <Switch backgroundColor='blue.900' borderRadius='1rem' onChange={toggleColorMode} marginBottom='1rem' />
       </Flex>
       <Flex
         display={{ base: "none", md: "unset" }}
@@ -105,7 +113,7 @@ const Home: NextPage = () => {
           backgroundColor='blackAlpha.600'
         >
           <NsList />
-          <Switch backgroundColor='teal.600' borderRadius='1rem' onChange={toggleColorMode} marginBottom='1rem' />
+          <Switch backgroundColor='blue.900' borderRadius='1rem' onChange={toggleColorMode} marginBottom='1rem' />
         </Flex>
         <Flex
           display={{ base: "unset", md: "none" }}
@@ -159,18 +167,21 @@ const Home: NextPage = () => {
                 icon={<HamburgerIcon h={8} w={8} />}
                 aria-label={"Expand Drawer"}
               ></IconButton>
-              <Flex flexDirection='row'>
+              <Flex alignItems='center' flexDirection='row'>
                 <ViewIcon />
                 {/*@ts-ignore react18 bug*/}
                 <Text fontSize='smaller' letterSpacing='.06rem' fontWeight='700'>{`\u00A0${numMembers} ${people} in here`}</Text>
               </Flex>
             </Flex>
             <Chat />
-            <Box margin='.3rem'>
+            <Box borderTopRadius='1rem' margin='.3rem'>
               <form onSubmit={handleSubmit(submitHandler)}>
                 <Input
+                  mb='1rem'
                   variant='filled'
                   type='text'
+                  fontWeight={500}
+                  letterSpacing='.05rem'
                   placeholder={`Message #${ctx.currentRoom}`}
                   _placeholder={{ color: "gray.500", fontWeight: "600", letterSpacing: ".03rem" }}
                   id='message'

@@ -1,4 +1,4 @@
-import { Box, Divider, Flex, Heading, Text, useColorModeValue } from "@chakra-ui/react";
+import { Box, Flex, Heading, Text, useColorModeValue } from "@chakra-ui/react";
 import { ChatIcon } from "@chakra-ui/icons";
 import React, { useEffect, useContext, useState } from "react";
 import { SocketContext } from "../context/socket-context";
