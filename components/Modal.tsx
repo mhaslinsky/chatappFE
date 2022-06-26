@@ -86,7 +86,7 @@ const UserNameModal: React.FC<{}> = (props) => {
             isLoading={loading}
             loadingText='Loading'
             onClick={() => {
-              signIn();
+              signIn("google");
             }}
           >
             Google
