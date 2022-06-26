@@ -64,6 +64,7 @@ const Home: NextPage = () => {
     else {
       if (status == "authenticated") {
         ctx.currentNamespace?.emit("newMessageToServer", { text: data.message, img: session.user?.image });
+        reset({ message: "" });
       } else {
         ctx.currentNamespace?.emit("newMessageToServer", { text: data.message });
         reset({ message: "" });
