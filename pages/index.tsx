@@ -148,11 +148,16 @@ const Home: NextPage = () => {
         </SlideDrawer>
         <Flex flexDirection={{ base: "column", md: "row" }} h='100vh' maxHeight='100%' maxWidth='calc(var(--vw, 1vw) * 100)'>
           {nsRoomElement}
-          <Flex flexDirection='column' justifyContent='space-between' h='100%' flexGrow='1'>
+          <Flex
+            position={{ base: "fixed", md: "unset" }}
+            top='0'
+            w='100%'
+            flexDirection='column'
+            justifyContent='space-between'
+            h='100%'
+            flexGrow='1'
+          >
             <Flex
-              position={{ base: "fixed", md: "unset" }}
-              top='0'
-              w='100%'
               h='2.5rem'
               boxShadow='0 4px 4px -2px #00000051'
               marginTop='1rem'
