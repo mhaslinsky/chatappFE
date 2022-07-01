@@ -85,7 +85,7 @@ const Home: NextPage = () => {
         backgroundColor='blackAlpha.400'
       >
         <NsList />
-        <Switch backgroundColor='blue.900' borderRadius='1rem' onChange={toggleColorMode} marginBottom='1rem' />
+        <Switch backgroundColor='blue.900' borderRadius='1rem' onChange={toggleColorMode} marginBottom='1.3rem' />
       </Flex>
       <Flex
         display={{ base: "none", md: "unset" }}
@@ -114,7 +114,7 @@ const Home: NextPage = () => {
           backgroundColor='blackAlpha.600'
         >
           <NsList />
-          <Switch backgroundColor='blue.900' borderRadius='1rem' onChange={toggleColorMode} marginBottom='1rem' />
+          <Switch backgroundColor='blue.900' borderRadius='1rem' onChange={toggleColorMode} marginBottom='1.3rem' />
         </Flex>
         <Flex
           display={{ base: "unset", md: "none" }}

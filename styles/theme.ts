@@ -13,6 +13,7 @@ const overrides = {
     },
     Switch: { baseStyle: { _focus: { boxShadow: "none" } } },
     Input: { baseStyle: { _focus: { boxShadow: "none" } } },
+    Popover: { baseStyle: { _focus: { boxShadow: "none" } } },
   },
 };
 

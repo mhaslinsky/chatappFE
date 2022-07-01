@@ -1,14 +1,36 @@
-import { Box, Flex, Heading, Text, useColorModeValue } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Icon,
+  Text,
+  useColorModeValue,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverAnchor,
+} from "@chakra-ui/react";
 import { ChatIcon } from "@chakra-ui/icons";
 import React, { useEffect, useContext, useState } from "react";
 import { SocketContext } from "../context/socket-context";
 import Room from "../models/Room";
+import { signOut, useSession } from "next-auth/react";
+import { Image } from "@chakra-ui/react";
+import { Skeleton } from "@chakra-ui/react";
+import { BsFillGearFill } from "react-icons/bs";
 
 const RoomList: React.FC<{}> = (props) => {
   const bg = useColorModeValue("blue.200", "blackAlpha.300");
   const hover = useColorModeValue("teal.300", "teal.700");
   const ctx = useContext(SocketContext);
   const [localRooms, setLocalRooms] = useState<Room[] | null>(null);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     /*@ts-ignore*/
@@ -36,48 +58,96 @@ const RoomList: React.FC<{}> = (props) => {
     ctx.setRoom(rm);
   }
 
-  if (ctx.availableRooms) {
-    return (
-      <React.Fragment>
-        <Box boxShadow='0 4px 4px -2px #00000061' paddingBottom='.45rem'>
-          <Heading fontSize='3xl' letterSpacing='.1rem' marginLeft='.4rem' marginTop='.6rem'>
-            {/*@ts-ignore*/}
-            {ctx.currentNamespace?.nsp.slice(1)}
-          </Heading>
-        </Box>
-        <Box marginTop='1rem'>
-          {ctx.availableRooms.map((rm) => {
-            let backgroundColor;
-            ctx.currentRoom == rm.roomTitle ? (backgroundColor = bg) : (backgroundColor = "unset");
-            return (
-              <Flex
+  const userBadge =
+    status == "authenticated" ? (
+      <Flex
+        boxShadow='0 -4px 4px -2px #00000061'
+        pt='.5rem'
+        pl='.5rem'
+        gap='.5rem'
+        alignItems='center'
+        pb='.5rem'
+        flexDir='row'
+        justifyContent='space-between'
+      >
+        <Flex gap='.5rem' alignItems='center'>
+          <Image w={45} h={45} borderRadius='full' objectFit='cover' alt={session!.user!.name!} src={session!.user!.image!} />
+          <Text fontWeight='600'>{session?.user?.name}</Text>
+        </Flex>
+        <Popover>
+          <PopoverTrigger>
+            <Button variant='ghost'>
+              <Icon as={BsFillGearFill} />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent w='auto'>
+            <PopoverBody>
+              <Button
+                variant='ghost'
                 onClick={() => {
-                  roomClickHandler(rm.roomTitle);
-                }}
-                justifyContent='spacebetween'
-                cursor='pointer'
-                alignItems='center'
-                marginBottom='.4rem'
-                marginLeft='.6rem'
-                padding='.4rem'
-                backgroundColor={backgroundColor}
-                borderRadius='.5rem'
-                key={rm.id}
-                margin='.2rem'
-                transition='.3s'
-                _hover={{
-                  background: hover,
+                  signOut();
                 }}
               >
-                <ChatIcon />
-                <Text letterSpacing='.06rem' fontWeight='600' noOfLines={1}>
-                  {`\u00A0${rm.roomTitle}`}
-                </Text>
-              </Flex>
-            );
-          })}
+                Sign out
+              </Button>
+            </PopoverBody>
+          </PopoverContent>
+        </Popover>
+      </Flex>
+    ) : (
+      <Skeleton mb='1.3rem' h='3rem' />
+    );
+
+  const test = status == "authenticated" ? console.log("authd") : console.log("not authd");
+
+  console.log(status);
+  console.log(test);
+
+  if (ctx.availableRooms) {
+    return (
+      <Flex h='100%' justifyContent='space-between' flexDir='column'>
+        <Box>
+          <Box boxShadow='0 4px 4px -2px #00000061' paddingBottom='.45rem'>
+            <Heading fontSize='3xl' letterSpacing='.1rem' marginLeft='.4rem' marginTop='.6rem'>
+              {/*@ts-ignore*/}
+              {ctx.currentNamespace?.nsp.slice(1)}
+            </Heading>
+          </Box>
+          <Box marginTop='1rem'>
+            {ctx.availableRooms.map((rm) => {
+              let backgroundColor;
+              ctx.currentRoom == rm.roomTitle ? (backgroundColor = bg) : (backgroundColor = "unset");
+              return (
+                <Flex
+                  onClick={() => {
+                    roomClickHandler(rm.roomTitle);
+                  }}
+                  justifyContent='spacebetween'
+                  cursor='pointer'
+                  alignItems='center'
+                  marginBottom='.4rem'
+                  marginLeft='.6rem'
+                  padding='.4rem'
+                  backgroundColor={backgroundColor}
+                  borderRadius='.5rem'
+                  key={rm.id}
+                  margin='.2rem'
+                  transition='.3s'
+                  _hover={{
+                    background: hover,
+                  }}
+                >
+                  <ChatIcon />
+                  <Text letterSpacing='.06rem' fontWeight='600' noOfLines={1}>
+                    {`\u00A0${rm.roomTitle}`}
+                  </Text>
+                </Flex>
+              );
+            })}
+          </Box>
         </Box>
-      </React.Fragment>
+        {userBadge}
+      </Flex>
     );
   } else {
     return (
