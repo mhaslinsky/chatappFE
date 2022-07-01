@@ -14,7 +14,7 @@ import SlideDrawer from "../components/Drawer";
 import { SocketContext } from "../context/socket-context";
 import Room from "../models/Room";
 import { useSwipeable } from "react-swipeable";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 interface FormValue {
   message: string;
@@ -150,6 +150,9 @@ const Home: NextPage = () => {
           {nsRoomElement}
           <Flex flexDirection='column' justifyContent='space-between' h='100%' flexGrow='1'>
             <Flex
+              position={{ base: "fixed", md: "unset" }}
+              top='0'
+              w='100%'
               h='2.5rem'
               boxShadow='0 4px 4px -2px #00000051'
               marginTop='1rem'
