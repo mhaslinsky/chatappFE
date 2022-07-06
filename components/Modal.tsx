@@ -57,6 +57,7 @@ const UserNameModal: React.FC<{}> = (props) => {
       });
     else {
       ctx.setUserName(data.username);
+      ctx.defaultNamespace.emit("login", data.username);
       onClose();
       reset({ username: "" });
     }

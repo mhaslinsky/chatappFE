@@ -4,7 +4,7 @@ import Head from "next/head";
 import { Box, Flex, IconButton, Input, Switch, Text, useDisclosure, useToast } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/react";
 import NsList from "../components/NsList";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import RoomList from "../components/RoomList";
 import { HamburgerIcon, ViewIcon } from "@chakra-ui/icons";
 import { useForm } from "react-hook-form";
@@ -15,6 +15,7 @@ import { SocketContext } from "../context/socket-context";
 import Room from "../models/Room";
 import { useSwipeable } from "react-swipeable";
 import { useSession } from "next-auth/react";
+import UsersList from "../components/UsersList";
 
 interface FormValue {
   message: string;
@@ -49,8 +50,12 @@ const Home: NextPage = () => {
     ctx.setAvailableRooms(roomData);
   });
 
-  // console.log(data);
-  // console.log(status);
+  useEffect(() => {
+    if (status == "authenticated" && ctx.userName) {
+      ctx.defaultNamespace.emit("login", ctx.userName, session.user?.image);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ctx.defaultNamespace, ctx.userName, status]);
 
   function submitHandler(data: any) {
     if (!data.message)
@@ -182,7 +187,10 @@ const Home: NextPage = () => {
                 <Text fontSize='smaller' letterSpacing='.06rem' fontWeight='700'>{`\u00A0${numMembers} ${people} in here`}</Text>
               </Flex>
             </Flex>
-            <Chat />
+            <Flex>
+              <Chat />
+              <UsersList />
+            </Flex>
             <Box borderTopRadius='1rem' margin='.3rem'>
               <form onSubmit={handleSubmit(submitHandler)}>
                 <Input

@@ -9,12 +9,7 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverHeader,
   PopoverBody,
-  PopoverFooter,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverAnchor,
 } from "@chakra-ui/react";
 import { ChatIcon } from "@chakra-ui/icons";
 import React, { useEffect, useContext, useState } from "react";
@@ -40,6 +35,14 @@ const RoomList: React.FC<{}> = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ctx.currentNamespace]);
+
+  useEffect(() => {
+    if (localStorage.getItem("lastRoom")) return;
+    if (ctx.availableRooms) {
+      roomClickHandler(ctx.availableRooms[0].roomTitle);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ctx.availableRooms]);
 
   useEffect(() => {
     if (!localRooms) return;
@@ -85,6 +88,7 @@ const RoomList: React.FC<{}> = (props) => {
               <Button
                 variant='ghost'
                 onClick={() => {
+                  // ctx.defaultNamespace.emit("logout", ctx.userName);
                   signOut();
                 }}
               >
@@ -97,11 +101,6 @@ const RoomList: React.FC<{}> = (props) => {
     ) : (
       <Skeleton mb='1.3rem' h='3rem' />
     );
-
-  const test = status == "authenticated" ? console.log("authd") : console.log("not authd");
-
-  console.log(status);
-  console.log(test);
 
   if (ctx.availableRooms) {
     return (

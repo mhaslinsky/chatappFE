@@ -5,10 +5,12 @@ import { io, Socket } from "socket.io-client";
 
 type SocketContextObj = {
   setUserName: (un: string) => void;
+  // setDefaultNamespace: (ns: Socket) => void;
   setAvailableNamespaces: (nsData: Namespace[]) => void;
   setAvailableRooms: (roomData: Room[]) => void;
   setNamespace: (nsSocket: Socket) => void;
   setRoom: (room: string) => void;
+  defaultNamespace: Socket;
   availableNamespaces: Namespace[] | null;
   availableRooms: Room[] | null;
   currentNamespace: Socket | null;
@@ -18,10 +20,12 @@ type SocketContextObj = {
 
 export const SocketContext = React.createContext<SocketContextObj>({
   setUserName: (un: string) => {},
+  // setDefaultNamespace: (ns: Socket) => {},
   setAvailableNamespaces: (nsData: Namespace[]) => {},
   setAvailableRooms: (roomData: Room[]) => {},
   setNamespace: (nsSocket: Socket) => {},
   setRoom: (room: string) => {},
+  defaultNamespace: io(`${process.env.SOCKETIO}/`),
   availableNamespaces: null,
   availableRooms: null,
   currentNamespace: null,
@@ -31,17 +35,20 @@ export const SocketContext = React.createContext<SocketContextObj>({
 
 const SocketContextProvider: React.FC<{ children: any }> = (props) => {
   const [userName, setUN] = useState<string>("");
+  const [defaultNamespace, setDefaultNamespace] = useState<Socket>(io(`${process.env.SOCKETIO}/`));
   const [availableNamespaces, setAvailableNamespaces] = useState<Namespace[] | null>(null);
   const [availableRooms, setAvailableRooms] = useState<Room[] | null>(null);
   const [currentNamespace, setCurrentNamespace] = useState<Socket | null>(null);
   const [currentRoom, setCurrentRoom] = useState<string | null>(null);
 
   const connectChatServer = (username: string) => {
-    const socketMain = io(`${process.env.SOCKETIO}`, {
+    const socketMain = io(`${process.env.SOCKETIO}/warcraft`, {
       query: { username },
     });
     return socketMain;
   };
+
+  useEffect(() => {}, []);
 
   //login logic
   useEffect(() => {
@@ -59,6 +66,7 @@ const SocketContextProvider: React.FC<{ children: any }> = (props) => {
         currentSocket?.emit("joinRoom", lastRoom);
       }
     } else {
+      localStorage.setItem("lastNamespace", JSON.stringify({ namespace: "/warcraft" }));
       setCurrentNamespace(connectChatServer(userName));
     }
     return () => {
@@ -100,6 +108,7 @@ const SocketContextProvider: React.FC<{ children: any }> = (props) => {
     setAvailableRooms: setRMs,
     setNamespace,
     setRoom,
+    defaultNamespace,
     userName,
     availableNamespaces,
     currentNamespace,
