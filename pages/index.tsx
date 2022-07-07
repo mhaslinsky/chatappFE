@@ -68,10 +68,16 @@ const Home: NextPage = () => {
       });
     else {
       if (status == "authenticated") {
-        ctx.currentNamespace?.emit("newMessageToServer", { text: data.message, img: session.user?.image });
+        console.log(ctx.userName);
+        ctx.currentNamespace?.emit("newMessageToServer", {
+          text: data.message,
+          img: session.user?.image,
+          username: ctx.userName,
+        });
         reset({ message: "" });
       } else {
-        ctx.currentNamespace?.emit("newMessageToServer", { text: data.message });
+        console.log(ctx.userName);
+        ctx.currentNamespace?.emit("newMessageToServer", { text: data.message, username: ctx.userName });
         reset({ message: "" });
       }
     }
@@ -165,7 +171,7 @@ const Home: NextPage = () => {
             <Flex
               h='2.5rem'
               boxShadow='0 4px 4px -2px #00000051'
-              marginTop='1rem'
+              marginTop='.8rem'
               paddingBottom='.5rem'
               paddingRight='1rem'
               justifyContent={{ base: "space-between", md: "flex-end" }}
@@ -187,10 +193,7 @@ const Home: NextPage = () => {
                 <Text fontSize='smaller' letterSpacing='.06rem' fontWeight='700'>{`\u00A0${numMembers} ${people} in here`}</Text>
               </Flex>
             </Flex>
-            <Flex>
-              <Chat />
-              <UsersList />
-            </Flex>
+            <Chat />
             <Box borderTopRadius='1rem' margin='.3rem'>
               <form onSubmit={handleSubmit(submitHandler)}>
                 <Input

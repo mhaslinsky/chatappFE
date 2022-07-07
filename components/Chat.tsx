@@ -16,6 +16,7 @@ const Chat: React.FC<{}> = (props) => {
   const ctx = useContext(SocketContext);
 
   useEffect(() => {
+    console.log("getting chat history");
     ctx.currentNamespace?.on("historyGET", (history) => {
       setUpdateType("server");
       setMessages(history);
@@ -29,8 +30,7 @@ const Chat: React.FC<{}> = (props) => {
   }, [ctx.currentNamespace]);
 
   useEffect(() => {
-    if (updateType == "user")
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (updateType == "user") messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     else {
       messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
     }
@@ -41,23 +41,8 @@ const Chat: React.FC<{}> = (props) => {
     <Box overflow='auto' h='100%'>
       {messages.map((msg) => {
         return (
-          <Flex
-            flexGrow='0'
-            borderRadius='1rem'
-            bg='whiteAlpha.100'
-            margin='1rem'
-            gap='.4rem'
-            alignItems='center'
-            key={msg.time}
-          >
-            <Box
-              flexShrink='0'
-              overflow='hidden'
-              w='10'
-              h='10'
-              position='relative'
-              borderRadius='50%'
-            >
+          <Flex flexGrow='0' borderRadius='1rem' bg='whiteAlpha.100' margin='1rem' gap='.4rem' alignItems='center' key={msg.time}>
+            <Box flexShrink='0' overflow='hidden' w='10' h='10' position='relative' borderRadius='50%'>
               <Image layout='fill' alt={msg.username} src={msg.avatar}></Image>
             </Box>
 

@@ -1,3 +1,4 @@
+import { Box, Flex, Image } from "@chakra-ui/react";
 import React from "react";
 import { useContext, useState } from "react";
 import { SocketContext } from "../context/socket-context";
@@ -17,16 +18,16 @@ const UsersList = () => {
   });
 
   return (
-    <div>
+    <Box w={200}>
       {connectedUsers.map((user) => {
         return (
-          <div key={user.id}>
-            <div>{user.image}</div>
-            <div>{user.username}</div>
-          </div>
+          <Flex flexDirection='row' justifyContent='center' key={user.id}>
+            <Image w={45} h={45} borderRadius='full' objectFit='cover' src={user.image} alt={user.id} />
+            <Flex>{user.username}</Flex>
+          </Flex>
         );
       })}
-    </div>
+    </Box>
   );
 };
 export default UsersList;

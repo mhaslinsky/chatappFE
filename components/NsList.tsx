@@ -20,11 +20,7 @@ const NsList: React.FC<{}> = (props) => {
         ctx.currentNamespace?.emit("leaveRoom", ctx.currentRoom);
         ctx.currentNamespace.close();
       }
-      ctx.setNamespace(
-        io(`${process.env.SOCKETIO}${ns.endpoint}`, {
-          query: { username: ctx.userName },
-        })
-      );
+      ctx.setNamespace(io(`${process.env.SOCKETIO}${ns.endpoint}`));
     },
     [ctx]
   );
