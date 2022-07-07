@@ -8,6 +8,9 @@ export default NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      httpOptions: {
+        timeout: 40000,
+      },
       authorization: {
         params: {
           prompt: "consent",
@@ -19,6 +22,9 @@ export default NextAuth({
     DiscordProvider({
       clientId: process.env.DISCORD_CLIENT_ID!,
       clientSecret: process.env.DISCORD_CLIENT_SECRET!,
+      httpOptions: {
+        timeout: 40000,
+      },
     }),
     // ...add more providers here
   ],

@@ -19,6 +19,7 @@ import { signOut, useSession } from "next-auth/react";
 import { Image } from "@chakra-ui/react";
 import { Skeleton } from "@chakra-ui/react";
 import { BsFillGearFill } from "react-icons/bs";
+import PopoverSO from "./PopoverSO";
 
 const RoomList: React.FC<{}> = (props) => {
   const bg = useColorModeValue("blue.200", "blackAlpha.300");
@@ -61,8 +62,10 @@ const RoomList: React.FC<{}> = (props) => {
     ctx.setRoom(rm);
   }
 
-  const userBadge =
-    status == "authenticated" ? (
+  let userBadge;
+
+  if (status == "authenticated") {
+    userBadge = (
       <Flex
         boxShadow='0 -4px 4px -2px #00000061'
         pt='.5rem'
@@ -77,30 +80,38 @@ const RoomList: React.FC<{}> = (props) => {
           <Image w={45} h={45} borderRadius='full' objectFit='cover' alt={session!.user!.name!} src={session!.user!.image!} />
           <Text fontWeight='600'>{session?.user?.name}</Text>
         </Flex>
-        <Popover>
-          <PopoverTrigger>
-            <Button variant='ghost'>
-              <Icon as={BsFillGearFill} />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent w='auto'>
-            <PopoverBody>
-              <Button
-                variant='ghost'
-                onClick={() => {
-                  // ctx.defaultNamespace.emit("logout", ctx.userName);
-                  signOut();
-                }}
-              >
-                Sign out
-              </Button>
-            </PopoverBody>
-          </PopoverContent>
-        </Popover>
+        <PopoverSO />
       </Flex>
-    ) : (
-      <Skeleton mb='1.3rem' h='3rem' />
     );
+  } else if (status == "unauthenticated" && ctx.userName) {
+    userBadge = (
+      <Flex
+        boxShadow='0 -4px 4px -2px #00000061'
+        pt='.5rem'
+        pl='.5rem'
+        gap='.5rem'
+        alignItems='center'
+        pb='.5rem'
+        flexDir='row'
+        justifyContent='space-between'
+      >
+        <Flex gap='.5rem' alignItems='center'>
+          <Image
+            w={45}
+            h={45}
+            borderRadius='full'
+            objectFit='cover'
+            alt={ctx.userName}
+            src='https://clinicforspecialchildren.org/wp-content/uploads/2016/08/avatar-placeholder.gif'
+          />
+          <Text fontWeight='600'>{ctx.userName}</Text>
+        </Flex>
+        <PopoverSO />
+      </Flex>
+    );
+  } else {
+    userBadge = <Skeleton mb='1.3rem' h='3rem' />;
+  }
 
   if (ctx.availableRooms) {
     return (
