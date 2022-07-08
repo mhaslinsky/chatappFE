@@ -68,7 +68,6 @@ const Home: NextPage = () => {
       });
     else {
       if (status == "authenticated") {
-        console.log(ctx.userName);
         ctx.currentNamespace?.emit("newMessageToServer", {
           text: data.message,
           img: session.user?.image,
@@ -76,7 +75,6 @@ const Home: NextPage = () => {
         });
         reset({ message: "" });
       } else {
-        console.log(ctx.userName);
         ctx.currentNamespace?.emit("newMessageToServer", { text: data.message, username: ctx.userName });
         reset({ message: "" });
       }
@@ -193,25 +191,30 @@ const Home: NextPage = () => {
                 <Text fontSize='smaller' letterSpacing='.06rem' fontWeight='700'>{`\u00A0${numMembers} ${people} in here`}</Text>
               </Flex>
             </Flex>
-            <Chat />
-            <Box borderTopRadius='1rem' margin='.3rem'>
-              <form onSubmit={handleSubmit(submitHandler)}>
-                <Input
-                  mb='1rem'
-                  variant='filled'
-                  type='text'
-                  fontWeight={500}
-                  letterSpacing='.05rem'
-                  placeholder={`Message #${ctx.currentRoom}`}
-                  _placeholder={{ color: "gray.500", fontWeight: "600", letterSpacing: ".03rem" }}
-                  id='message'
-                  errorBorderColor='red'
-                  {...register("message", {
-                    onBlur: () => {},
-                  })}
-                />
-              </form>
-            </Box>
+            <Flex overflow='auto' w='100%' h='100%'>
+              <Flex justifyContent='flex-start' w='100%' h='100%' flexDirection='column'>
+                <Chat />
+                <Box borderTopRadius='1rem' margin='.3rem'>
+                  <form onSubmit={handleSubmit(submitHandler)}>
+                    <Input
+                      mb='1rem'
+                      variant='filled'
+                      type='text'
+                      fontWeight={500}
+                      letterSpacing='.05rem'
+                      placeholder={`Message #${ctx.currentRoom}`}
+                      _placeholder={{ color: "gray.500", fontWeight: "600", letterSpacing: ".03rem" }}
+                      id='message'
+                      errorBorderColor='red'
+                      {...register("message", {
+                        onBlur: () => {},
+                      })}
+                    />
+                  </form>
+                </Box>
+              </Flex>
+              <UsersList />
+            </Flex>
           </Flex>
         </Flex>
       </main>

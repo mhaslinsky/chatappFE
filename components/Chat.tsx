@@ -16,7 +16,6 @@ const Chat: React.FC<{}> = (props) => {
   const ctx = useContext(SocketContext);
 
   useEffect(() => {
-    console.log("getting chat history");
     ctx.currentNamespace?.on("historyGET", (history) => {
       setUpdateType("server");
       setMessages(history);

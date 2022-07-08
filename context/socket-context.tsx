@@ -42,9 +42,7 @@ const SocketContextProvider: React.FC<{ children: any }> = (props) => {
   const [currentRoom, setCurrentRoom] = useState<string | null>(null);
 
   const connectChatServer = (username: string) => {
-    const socketMain = io(`${process.env.SOCKETIO}/warcraft`, {
-      query: { username },
-    });
+    const socketMain = io(`${process.env.SOCKETIO}/warcraft`);
     return socketMain;
   };
 
@@ -56,9 +54,7 @@ const SocketContextProvider: React.FC<{ children: any }> = (props) => {
     if (!userName) return;
     if (localStorage.getItem("lastNamespace")) {
       const lastNamespace = JSON.parse(localStorage.getItem("lastNamespace")!).namespace;
-      currentSocket = io(`${process.env.SOCKETIO}${lastNamespace}`, {
-        query: { username: userName },
-      });
+      currentSocket = io(`${process.env.SOCKETIO}${lastNamespace}`);
       setCurrentNamespace(currentSocket);
       if (localStorage.getItem("lastRoom")) {
         const lastRoom = JSON.parse(localStorage.getItem("lastRoom")!).room;
