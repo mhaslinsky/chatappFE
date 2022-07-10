@@ -3,21 +3,38 @@ import React from "react";
 import { useContext, useState } from "react";
 import { SocketContext } from "../context/socket-context";
 
-const UsersList = () => {
+const UsersListDrawer = () => {
   const ctx = useContext(SocketContext);
 
   return (
-    <Box display={{ base: "none", md: "unset" }} as='aside' backgroundColor='blackAlpha.200' pl='.5rem' pt='1rem' w='200px'>
-      <Heading as='h3' fontSize='md' mb='1rem' letterSpacing='.15rem'>
+    <Box overflow='auto' w='100%' display={{ base: "unset", md: "none" }} as='aside' backgroundColor='blackAlpha.200'>
+      <Heading
+        boxShadow='1px 3px 6px 2px rgba(0, 0, 0, 0.2)'
+        pt='1.6rem'
+        pb='.4rem'
+        pl='1rem'
+        as='h3'
+        fontSize='md'
+        mb='1rem'
+        letterSpacing='.15rem'
+      >
         Online
       </Heading>
       {ctx.connectedUsers.map((user) => {
         return (
-          <Flex position='relative' mb='.2rem' flexDirection='row' justifyContent='flex-start' alignItems='center' key={user.id}>
+          <Flex
+            pl='1rem'
+            position='relative'
+            mb='.2rem'
+            flexDirection='row'
+            justifyContent='flex-start'
+            alignItems='center'
+            key={user.id}
+          >
             <Box
-              border='1px solid blackAlpha.200'
-              left={7}
-              top={7}
+              border='1px solid gray'
+              left='12'
+              top={8}
               h='18px'
               w='18px'
               backgroundColor='green'
@@ -32,4 +49,4 @@ const UsersList = () => {
     </Box>
   );
 };
-export default UsersList;
+export default UsersListDrawer;

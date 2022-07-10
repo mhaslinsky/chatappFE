@@ -3,34 +3,42 @@ import Namespace from "../models/Namespace";
 import Room from "../models/Room";
 import { io, Socket } from "socket.io-client";
 
+interface user {
+  id: string;
+  username: string;
+  image: string;
+}
+
 type SocketContextObj = {
   setUserName: (un: string) => void;
-  // setDefaultNamespace: (ns: Socket) => void;
   setAvailableNamespaces: (nsData: Namespace[]) => void;
   setAvailableRooms: (roomData: Room[]) => void;
   setNamespace: (nsSocket: Socket) => void;
   setRoom: (room: string) => void;
+  setConnectedUsers: (users: user[]) => void;
   defaultNamespace: Socket;
   availableNamespaces: Namespace[] | null;
   availableRooms: Room[] | null;
   currentNamespace: Socket | null;
   currentRoom: string | null;
   userName: string | null;
+  connectedUsers: user[];
 };
 
 export const SocketContext = React.createContext<SocketContextObj>({
   setUserName: (un: string) => {},
-  // setDefaultNamespace: (ns: Socket) => {},
   setAvailableNamespaces: (nsData: Namespace[]) => {},
   setAvailableRooms: (roomData: Room[]) => {},
   setNamespace: (nsSocket: Socket) => {},
   setRoom: (room: string) => {},
+  setConnectedUsers: (users: user[]) => {},
   defaultNamespace: io(`${process.env.SOCKETIO}/`),
   availableNamespaces: null,
   availableRooms: null,
   currentNamespace: null,
   currentRoom: null,
   userName: null,
+  connectedUsers: [],
 });
 
 const SocketContextProvider: React.FC<{ children: any }> = (props) => {
@@ -40,6 +48,7 @@ const SocketContextProvider: React.FC<{ children: any }> = (props) => {
   const [availableRooms, setAvailableRooms] = useState<Room[] | null>(null);
   const [currentNamespace, setCurrentNamespace] = useState<Socket | null>(null);
   const [currentRoom, setCurrentRoom] = useState<string | null>(null);
+  const [connectedUsers, setUsersConnected] = useState<user[]>([]);
 
   const connectChatServer = (username: string) => {
     const socketMain = io(`${process.env.SOCKETIO}/warcraft`);
@@ -97,6 +106,9 @@ const SocketContextProvider: React.FC<{ children: any }> = (props) => {
   function setRMs(rmData: Room[]) {
     setAvailableRooms(rmData);
   }
+  function setConnectedUsers(users: user[]) {
+    setUsersConnected(users);
+  }
 
   const contextValue: SocketContextObj = {
     setUserName,
@@ -104,12 +116,14 @@ const SocketContextProvider: React.FC<{ children: any }> = (props) => {
     setAvailableRooms: setRMs,
     setNamespace,
     setRoom,
+    setConnectedUsers,
     defaultNamespace,
     userName,
     availableNamespaces,
     currentNamespace,
     availableRooms,
     currentRoom,
+    connectedUsers,
   };
 
   return <SocketContext.Provider value={contextValue}>{props.children}</SocketContext.Provider>;

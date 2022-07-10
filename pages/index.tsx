@@ -16,20 +16,32 @@ import Room from "../models/Room";
 import { useSwipeable } from "react-swipeable";
 import { useSession } from "next-auth/react";
 import UsersList from "../components/UsersList";
+import UserDrawer from "../components/UserDrawer";
+import UsersListDrawer from "../components/UsersListDrawer";
 
 interface FormValue {
   message: string;
 }
+interface user {
+  id: string;
+  username: string;
+  image: string;
+}
 
 const Home: NextPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isOpenUserDrawer, onOpen: onOpenUserDrawer, onClose: onCloseUserDrawer } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const [numMembers, setNumMembers] = useState<Number>(0);
   const ctx = useContext(SocketContext);
   const { data: session, status } = useSession();
+
   const swipeHandlers = useSwipeable({
     onSwipedRight: () => {
       onOpen();
+    },
+    onSwipedLeft: () => {
+      onOpenUserDrawer();
     },
   });
   const toast = useToast();
@@ -48,6 +60,10 @@ const Home: NextPage = () => {
 
   ctx.currentNamespace?.on("nsRoomLoad", (roomData: Room[]) => {
     ctx.setAvailableRooms(roomData);
+  });
+
+  ctx.defaultNamespace.on("connectedUsers", (connectedUsers: user[]) => {
+    ctx.setConnectedUsers(connectedUsers);
   });
 
   useEffect(() => {
@@ -155,6 +171,14 @@ const Home: NextPage = () => {
         >
           {nsRoomElementSD}
         </SlideDrawer>
+        <UserDrawer
+          isOpen={isOpenUserDrawer}
+          onClose={() => {
+            onCloseUserDrawer();
+          }}
+        >
+          <UsersListDrawer />
+        </UserDrawer>
         <Flex flexDirection={{ base: "column", md: "row" }} h='100vh' maxHeight='100%' maxWidth='calc(var(--vw, 1vw) * 100)'>
           {nsRoomElement}
           <Flex
