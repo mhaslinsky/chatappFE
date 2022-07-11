@@ -1,7 +1,7 @@
 /* eslint-disable react/no-children-prop */
 import type { NextPage } from "next";
 import Head from "next/head";
-import { Box, Flex, IconButton, Input, Switch, Text, useDisclosure, useToast } from "@chakra-ui/react";
+import { Box, Flex, IconButton, Input, Switch, Text, useColorModeValue, useDisclosure, useToast } from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/react";
 import NsList from "../components/NsList";
 import React, { useContext, useEffect, useState } from "react";
@@ -35,6 +35,8 @@ const Home: NextPage = () => {
   const [numMembers, setNumMembers] = useState<Number>(0);
   const ctx = useContext(SocketContext);
   const { data: session, status } = useSession();
+  const SDNSBGColor = useColorModeValue("rgba(0, 242, 255, 0.228)", "rgba(0, 0, 0, 0.542)");
+  const SDRMBGColor = useColorModeValue("rgba(158, 244, 248, 0.228)", "rgba(0, 0, 0, 0.542)");
 
   const swipeHandlers = useSwipeable({
     onSwipedRight: () => {
@@ -136,7 +138,7 @@ const Home: NextPage = () => {
           flexShrink='0'
           alignItems='center'
           justifyContent='space-between'
-          backgroundColor='blackAlpha.600'
+          backgroundColor={SDNSBGColor}
         >
           <NsList />
           <Switch backgroundColor='blue.900' borderRadius='1rem' onChange={toggleColorMode} marginBottom='1.3rem' />
@@ -147,7 +149,7 @@ const Home: NextPage = () => {
           h='100%'
           w='248px'
           flexShrink='0'
-          backgroundColor='blackAlpha.400'
+          backgroundColor={SDRMBGColor}
         >
           <RoomList />
         </Flex>
@@ -218,7 +220,7 @@ const Home: NextPage = () => {
             <Flex overflow='auto' w='100%' h='100%'>
               <Flex justifyContent='flex-start' w='100%' h='100%' flexDirection='column'>
                 <Chat />
-                <Box borderTopRadius='1rem' margin='.3rem'>
+                <Box borderTopRadius='1rem' ml='.3rem' mr='.3rem' mb='.3rem'>
                   <form onSubmit={handleSubmit(submitHandler)}>
                     <Input
                       mb='1rem'

@@ -18,7 +18,7 @@ const SideDrawer: React.FC<DrawerProps> = (props) => {
   return (
     <Drawer placement='left' onClose={props.onClose} isOpen={props.isOpen}>
       <DrawerOverlay />
-      <DrawerContent>
+      <DrawerContent backdropFilter='blur(2px)' bg='none'>
         <DrawerBody {...swipeHandlers} p='-4'>
           {props.children}
         </DrawerBody>

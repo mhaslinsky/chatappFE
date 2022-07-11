@@ -78,7 +78,9 @@ const RoomList: React.FC<{}> = (props) => {
       >
         <Flex gap='.5rem' alignItems='center'>
           <Image w={45} h={45} borderRadius='full' objectFit='cover' alt={session!.user!.name!} src={session!.user!.image!} />
-          <Text fontWeight='600'>{session?.user?.name}</Text>
+          <Text noOfLines={1} maxW='150px' overflow='hidden' text-overflow='ellipsis' fontWeight='600'>
+            {session?.user?.name}
+          </Text>
         </Flex>
         <PopoverSO />
       </Flex>
@@ -104,7 +106,9 @@ const RoomList: React.FC<{}> = (props) => {
             alt={ctx.userName}
             src='https://clinicforspecialchildren.org/wp-content/uploads/2016/08/avatar-placeholder.gif'
           />
-          <Text fontWeight='600'>{ctx.userName}</Text>
+          <Text noOfLines={1} overflow='hidden' text-overflow='ellipsis' maxW='150px' fontWeight='600'>
+            {ctx.userName}
+          </Text>
         </Flex>
         <PopoverSO />
       </Flex>

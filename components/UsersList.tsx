@@ -25,7 +25,9 @@ const UsersList = () => {
               position='absolute'
             ></Box>
             <Image mr='.4rem' w={45} h={45} borderRadius='full' objectFit='cover' src={user.image} alt={user.id} />
-            <Flex fontWeight='600'>{user.username}</Flex>
+            <Flex noOfLines={1} overflow='hidden' text-overflow='ellipsis' fontWeight='600'>
+              {user.username}
+            </Flex>
           </Flex>
         );
       })}

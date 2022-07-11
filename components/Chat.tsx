@@ -40,13 +40,14 @@ const Chat: React.FC<{}> = (props) => {
     <Box overflow='auto' h='100%'>
       {messages.map((msg) => {
         return (
-          <Flex flexGrow='0' borderRadius='1rem' bg='whiteAlpha.100' margin='1rem' gap='.4rem' alignItems='center' key={msg.time}>
+          <Flex borderRadius='1rem' margin='1rem' gap='.4rem' alignItems='flex-start' key={msg.time}>
             <Box flexShrink='0' overflow='hidden' w='10' h='10' position='relative' borderRadius='50%'>
               <Image layout='fill' alt={msg.username} src={msg.avatar}></Image>
             </Box>
-
-            <Text fontWeight='700'>{msg.username}</Text>
-            <Text>{msg.text}</Text>
+            <Text w='8rem' maxW='10rem' noOfLines={1} overflow='hidden' text-overflow='ellipsis' fontWeight='700'>
+              {msg.username}
+            </Text>
+            <Text w='100%'>{msg.text}</Text>
           </Flex>
         );
       })}
