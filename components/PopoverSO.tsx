@@ -1,22 +1,20 @@
 import React from "react";
 import {
-  Box,
   Button,
-  Flex,
-  Heading,
   Icon,
-  Text,
-  useColorModeValue,
   Popover,
   PopoverTrigger,
   PopoverContent,
   PopoverBody,
+  useColorModeValue,
+  useColorMode,
 } from "@chakra-ui/react";
 import { BsFillGearFill } from "react-icons/bs";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 const PopoverSO = () => {
-  const { data: session, status } = useSession();
+  const bg = useColorModeValue("rgba(231, 231, 231, 0.228)", "rgba(0, 0, 0, 0.784)");
+  const { colorMode, toggleColorMode } = useColorMode();
   return (
     <Popover>
       <PopoverTrigger>
@@ -24,8 +22,8 @@ const PopoverSO = () => {
           <Icon as={BsFillGearFill} />
         </Button>
       </PopoverTrigger>
-      <PopoverContent w='auto'>
-        <PopoverBody>
+      <PopoverContent boxShadow='none !important' bg={bg} w='auto'>
+        <PopoverBody backdropFilter='blur(4px)' border='2px solid' borderColor={colorMode === "light" ? "#e6e6e6" : "#00000073"}>
           <Button
             variant='ghost'
             onClick={() => {

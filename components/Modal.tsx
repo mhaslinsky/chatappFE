@@ -11,6 +11,8 @@ import {
   Button,
   Box,
   Icon,
+  useColorModeValue,
+  useColorMode,
 } from "@chakra-ui/react";
 import React, { useEffect, useContext } from "react";
 import { useForm } from "react-hook-form";
@@ -33,6 +35,8 @@ const UserNameModal: React.FC<{}> = (props) => {
     formState: { errors },
   } = useForm<FormValue>({ defaultValues: { username: "" } });
   const { data: session, status } = useSession();
+  const bg = useColorModeValue("rgba(241, 241, 241, 0.228)", "rgba(0, 0, 0, 0.601)");
+  const { colorMode, toggleColorMode } = useColorMode();
   let loading = status == "loading" ? true : false;
 
   useEffect(() => {
@@ -70,8 +74,7 @@ const UserNameModal: React.FC<{}> = (props) => {
 
   return (
     <Modal isCentered closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
+      <ModalContent border='2px solid' borderColor={colorMode === "light" ? "#e6e6e6" : "#00000073"} bg={bg}>
         <ModalHeader mb='-3.5'>Please Choose a Username!</ModalHeader>
         <ModalBody>
           <form onSubmit={handleSubmit(submitHandler)}>

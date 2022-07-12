@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Image } from "@chakra-ui/react";
+import { Box, Flex, Heading, Image, useColorModeValue } from "@chakra-ui/react";
 import React from "react";
 import { useContext, useState } from "react";
 import { SocketContext } from "../context/socket-context";
@@ -7,7 +7,7 @@ const UsersListDrawer = () => {
   const ctx = useContext(SocketContext);
 
   return (
-    <Box overflow='auto' w='100%' display={{ base: "unset", md: "none" }} as='aside' backgroundColor='blackAlpha.200'>
+    <Flex overflow='auto' w='100%' display={{ base: "unset", md: "none" }} as='aside' backgroundColor='blackAlpha.200'>
       <Heading
         boxShadow='1px 3px 6px 2px rgba(0, 0, 0, 0.2)'
         pt='1.6rem'
@@ -48,7 +48,7 @@ const UsersListDrawer = () => {
           </Flex>
         );
       })}
-    </Box>
+    </Flex>
   );
 };
 export default UsersListDrawer;

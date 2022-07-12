@@ -1,7 +1,18 @@
 /* eslint-disable react/no-children-prop */
 import type { NextPage } from "next";
 import Head from "next/head";
-import { Box, Flex, IconButton, Input, Switch, Text, useColorModeValue, useDisclosure, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  IconButton,
+  Input,
+  Switch,
+  Text,
+  useColorModeValue,
+  useDisclosure,
+  useToast,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import { useColorMode } from "@chakra-ui/react";
 import NsList from "../components/NsList";
 import React, { useContext, useEffect, useState } from "react";
@@ -35,11 +46,10 @@ const Home: NextPage = () => {
   const [numMembers, setNumMembers] = useState<Number>(0);
   const ctx = useContext(SocketContext);
   const { data: session, status } = useSession();
-  const SDNSBGColor = useColorModeValue("rgba(0, 242, 255, 0.228)", "rgba(0, 0, 0, 0.833)");
-  const SDRMBGColor = useColorModeValue("rgba(158, 244, 248, 0.228)", "rgba(0, 0, 0, 0.637)");
   const NSBGColor = useColorModeValue("rgba(79, 79, 79, 0.228)", "rgba(0, 0, 0, 0.833)");
   const RMBGColor = useColorModeValue("rgba(222, 222, 222, 0.353)", "rgba(0, 0, 0, 0.637)");
   const ChatBGColor = useColorModeValue("rgba(222, 222, 222, 0.353)", "rgba(0, 0, 0, 0.637)");
+  const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
 
   const swipeHandlers = useSwipeable({
     onSwipedRight: () => {
@@ -99,6 +109,14 @@ const Home: NextPage = () => {
         ctx.currentNamespace?.emit("newMessageToServer", { text: data.message, username: ctx.userName });
         reset({ message: "" });
       }
+    }
+  }
+
+  function userLinkHandler() {
+    if (isLargerThan768) {
+      return;
+    } else {
+      onOpenUserDrawer();
     }
   }
 
@@ -220,7 +238,14 @@ const Home: NextPage = () => {
               <Flex alignItems='center' flexDirection='row'>
                 <ViewIcon />
                 {/*@ts-ignore react18 bug*/}
-                <Text fontSize='smaller' letterSpacing='.06rem' fontWeight='700'>{`\u00A0${numMembers} ${people} in here`}</Text>
+                <Text
+                  onClick={() => {
+                    userLinkHandler();
+                  }}
+                  fontSize='smaller'
+                  letterSpacing='.06rem'
+                  fontWeight='700'
+                >{`\u00A0${numMembers} ${people} in here`}</Text>
               </Flex>
             </Flex>
             <Flex overflow='auto' w='100%' h='100%'>
