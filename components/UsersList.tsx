@@ -1,13 +1,24 @@
-import { Box, Flex, Heading, Image } from "@chakra-ui/react";
+import { Box, Flex, Heading, Image, useColorMode, useColorModeValue } from "@chakra-ui/react";
 import React from "react";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { SocketContext } from "../context/socket-context";
 
 const UsersList = () => {
   const ctx = useContext(SocketContext);
+  const RMBGColor = useColorModeValue("rgba(222, 222, 222, 0.353)", "rgba(0, 0, 0, 0.637)");
+  const { colorMode, toggleColorMode } = useColorMode();
 
   return (
-    <Box display={{ base: "none", md: "unset" }} as='aside' backgroundColor='blackAlpha.200' pl='.5rem' pt='1rem' w='200px'>
+    <Box
+      borderLeft='2px solid'
+      borderColor={colorMode === "light" ? "#e6e6e6" : "#00000073"}
+      display={{ base: "none", md: "unset" }}
+      as='aside'
+      backgroundColor={RMBGColor}
+      pl='.5rem'
+      pt='1rem'
+      w='200px'
+    >
       <Heading as='h3' fontSize='md' mb='1rem' letterSpacing='.15rem'>
         Online
       </Heading>
@@ -26,7 +37,7 @@ const UsersList = () => {
             ></Box>
             <Image mr='.4rem' w={45} h={45} borderRadius='full' objectFit='cover' src={user.image} alt={user.id} />
             <Flex noOfLines={1} overflow='hidden' text-overflow='ellipsis' fontWeight='600'>
-              {user.username}
+              {user.username}s
             </Flex>
           </Flex>
         );

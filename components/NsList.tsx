@@ -7,6 +7,7 @@ import { SocketContext } from "../context/socket-context";
 
 const NsList: React.FC<{}> = (props) => {
   const bg = useColorModeValue("teal.400", "blue.600");
+  const nsBG = useColorModeValue("rgba(49, 77, 200, 0.228)", "rgba(2, 37, 192, 0.228)");
   const ttClr = useColorModeValue("black", "gray.300");
   const ctx = useContext(SocketContext);
 
@@ -39,7 +40,7 @@ const NsList: React.FC<{}> = (props) => {
         {ctx.availableNamespaces.map((ns) => {
           let backgroundColor;
           /*@ts-ignore*/
-          ctx.currentNamespace?.nsp == ns.endpoint ? (backgroundColor = bg) : (backgroundColor = "blackAlpha.500");
+          ctx.currentNamespace?.nsp == ns.endpoint ? (backgroundColor = bg) : (backgroundColor = nsBG);
           return (
             <Tooltip
               boxShadow='1px 3px 6px 2px rgba(0, 0, 0, 0.2)'

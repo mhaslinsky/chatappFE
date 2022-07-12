@@ -35,8 +35,11 @@ const Home: NextPage = () => {
   const [numMembers, setNumMembers] = useState<Number>(0);
   const ctx = useContext(SocketContext);
   const { data: session, status } = useSession();
-  const SDNSBGColor = useColorModeValue("rgba(0, 242, 255, 0.228)", "rgba(0, 0, 0, 0.542)");
-  const SDRMBGColor = useColorModeValue("rgba(158, 244, 248, 0.228)", "rgba(0, 0, 0, 0.542)");
+  const SDNSBGColor = useColorModeValue("rgba(0, 242, 255, 0.228)", "rgba(0, 0, 0, 0.833)");
+  const SDRMBGColor = useColorModeValue("rgba(158, 244, 248, 0.228)", "rgba(0, 0, 0, 0.637)");
+  const NSBGColor = useColorModeValue("rgba(79, 79, 79, 0.228)", "rgba(0, 0, 0, 0.833)");
+  const RMBGColor = useColorModeValue("rgba(222, 222, 222, 0.353)", "rgba(0, 0, 0, 0.637)");
+  const ChatBGColor = useColorModeValue("rgba(222, 222, 222, 0.353)", "rgba(0, 0, 0, 0.637)");
 
   const swipeHandlers = useSwipeable({
     onSwipedRight: () => {
@@ -109,7 +112,7 @@ const Home: NextPage = () => {
         flexShrink='0'
         alignItems='center'
         justifyContent='space-between'
-        backgroundColor='blackAlpha.400'
+        backgroundColor={NSBGColor}
       >
         <NsList />
         <Switch backgroundColor='blue.900' borderRadius='1rem' onChange={toggleColorMode} marginBottom='1.3rem' />
@@ -120,7 +123,9 @@ const Home: NextPage = () => {
         h='100%'
         w='240px'
         flexShrink='0'
-        backgroundColor='blackAlpha.200'
+        backgroundColor={RMBGColor}
+        borderRight='2px solid'
+        borderColor={colorMode === "light" ? "#e6e6e6" : "#00000073"}
       >
         <RoomList />
       </Flex>
@@ -138,7 +143,7 @@ const Home: NextPage = () => {
           flexShrink='0'
           alignItems='center'
           justifyContent='space-between'
-          backgroundColor={SDNSBGColor}
+          backgroundColor={NSBGColor}
         >
           <NsList />
           <Switch backgroundColor='blue.900' borderRadius='1rem' onChange={toggleColorMode} marginBottom='1.3rem' />
@@ -149,7 +154,7 @@ const Home: NextPage = () => {
           h='100%'
           w='248px'
           flexShrink='0'
-          backgroundColor={SDRMBGColor}
+          backgroundColor={RMBGColor}
         >
           <RoomList />
         </Flex>
@@ -193,9 +198,10 @@ const Home: NextPage = () => {
             flexGrow='1'
           >
             <Flex
-              h='2.5rem'
+              bg={RMBGColor}
+              h='3.4rem'
               boxShadow='0 4px 4px -2px #00000051'
-              marginTop='.8rem'
+              paddingTop='.8rem'
               paddingBottom='.5rem'
               paddingRight='1rem'
               justifyContent={{ base: "space-between", md: "flex-end" }}
@@ -218,7 +224,7 @@ const Home: NextPage = () => {
               </Flex>
             </Flex>
             <Flex overflow='auto' w='100%' h='100%'>
-              <Flex justifyContent='flex-start' w='100%' h='100%' flexDirection='column'>
+              <Flex bg={ChatBGColor} justifyContent='flex-start' w='100%' h='100%' flexDirection='column'>
                 <Chat />
                 <Box borderTopRadius='1rem' ml='.3rem' mr='.3rem' mb='.3rem'>
                   <form onSubmit={handleSubmit(submitHandler)}>

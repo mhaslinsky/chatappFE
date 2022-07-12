@@ -18,12 +18,11 @@ import Room from "../models/Room";
 import { signOut, useSession } from "next-auth/react";
 import { Image } from "@chakra-ui/react";
 import { Skeleton } from "@chakra-ui/react";
-import { BsFillGearFill } from "react-icons/bs";
 import PopoverSO from "./PopoverSO";
 
 const RoomList: React.FC<{}> = (props) => {
-  const bg = useColorModeValue("blue.200", "blackAlpha.300");
-  const hover = useColorModeValue("teal.300", "teal.700");
+  const bg = useColorModeValue("blue.200", "rgba(20, 56, 220, 0.228)");
+  const hover = useColorModeValue("rgba(49, 77, 200, 0.228)", "rgba(2, 37, 192, 0.228)");
   const ctx = useContext(SocketContext);
   const [localRooms, setLocalRooms] = useState<Room[] | null>(null);
   const { data: session, status } = useSession();
