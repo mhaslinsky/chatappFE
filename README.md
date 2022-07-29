@@ -20,7 +20,7 @@ redudant for my learning purposes, but could see it used as a great springboard 
 
 ## Features
 
-- Change rooms, and send messages
+- Change rooms/servers, and send messages
 - Light/dark mode toggle
 - User persistance, both live connections to room and logged in users to server
 - Responsive, both mobile and desktop versions.
