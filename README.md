@@ -21,9 +21,10 @@ redudant for my learning purposes, but could see it used as a great springboard 
 ## Features
 
 - Change rooms/servers, and send messages
+- Form validation for messages
 - Light/dark mode toggle
 - User persistance, both live connections to room and logged in users to server
-- Responsive, both mobile and desktop versions.
+- Responsive, both mobile and desktop versions
 
 ## Run Locally
 
