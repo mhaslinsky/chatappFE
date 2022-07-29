@@ -66,7 +66,7 @@ To run this project, you will need to add the following environment variables to
 This project provides configuration for Discord and Google, however most are pretty simple to setup
 once you have a developer account.
 
-and a `NEXTAUTH_SECRET` for Next Auth to use when encryption session data in JWTs
+and a `NEXTAUTH_SECRET` for Next Auth to use when encrypting session data in JWTs
 
 ## License
 
