@@ -183,7 +183,7 @@ const Home: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>Slackish</title>
+        <title>Dissonance</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main {...swipeHandlers}>
