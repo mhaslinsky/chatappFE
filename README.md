@@ -1,34 +1,72 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Dissonance
 
-## Getting Started
+This project started out as a brief case study to learn socket.io by creating a simple chat app and then implement those newly
+learned technologies into my other
+project, [Insta-sham](https://github.com/mhaslinsky/imagesplaces). However after spending sometime with this, it expanded a bit
+beyond its inital scope and became a testbed to learn alternatives for implementing authentication, form logic, and CSS in JS.
+In my previous project, referenced above, I created all of those, for all intents and purposes, from the ground up. This time,
+I learned why it is commonly said not to reinvent the wheel.
 
-First, run the development server:
+This project does have a backend hosted, the repo can be found [here](https://github.com/mhaslinsky/expressjs-mongoose-rw).
+It does not have persistant storage, no database is used. Chat data is stored via express and user data via local storage.
+This project could be expanded to allow user creation of accounts, servers, rooms, etc. However, I felt that to be
+redudant for my learning purposes, but could see it used as a great springboard for someone looking to learn a DB technology.
+
+## Tech Stack
+
+**Client:** React, NextJS, Next-Auth, React-hook-form, Socket.io-Client, ChakraUI, React-Icons, React-Swipeable
+
+**Server:** Node, Express, Socket.io-Server
+
+## Features
+
+- Change rooms, and send messages
+- Light/dark mode toggle
+- User persistance, both live connections to room and logged in users to server
+- Responsive, both mobile and desktop versions.
+
+## Run Locally
+
+Clone the project
 
 ```bash
-npm run dev
-# or
-yarn dev
+  git clone https://github.com/mhaslinsky/chatappFE
+```
+
+Go to the project directory
+
+```bash
+  cd my-project
+```
+
+Install dependencies
+
+```bash
+  npm install
+```
+
+Start the server
+
+```bash
+  npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+To run this project, you will need to add the following environment variables to your .env file
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+`SOCKETIO` pointing to your socket io server
 
-## Learn More
+`NEXTAUTH_URL` pointing to your local server if taking advantage of NextJS/vercel lambdas
 
-To learn more about Next.js, take a look at the following resources:
+`CLIENT_ID` and `CLIENT_SECRET` for each 3rd party Oauth provider you wish to use.  
+This project provides configuration for Discord and Google, however most are pretty simple to setup
+once you have a developer account.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+and a `NEXTAUTH_SECRET` for Next Auth to use when encryption session data in JWTs
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+[MIT](https://choosealicense.com/licenses/mit/)
