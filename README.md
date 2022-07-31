@@ -12,6 +12,10 @@ It does not have persistant storage, no database is used. Chat data is stored vi
 This project could be expanded to allow user creation of accounts, servers, rooms, etc. However, I felt that to be
 redudant for my learning purposes, but could see it used as a great springboard for someone looking to learn a DB technology.
 
+## Demo
+
+**Client:** https://chatapp-fe-eta.vercel.app/
+
 ## Tech Stack
 
 **Client:** React, NextJS, Next-Auth, React-hook-form, Socket.io-Client, ChakraUI, React-Icons, React-Swipeable
